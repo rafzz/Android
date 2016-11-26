@@ -136,4 +136,22 @@
         android:layout_alignRight="@+id/xText"
         android:layout_alignEnd="@+id/xText"
         android:id="@+id/zText" />
+
+    <TextView
+        android:text="Compass:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView11"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView11"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/compassText" />
 </RelativeLayout>

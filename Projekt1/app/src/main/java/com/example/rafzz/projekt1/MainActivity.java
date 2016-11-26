@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor lightSensor;
     private Sensor gyroSensor;
 
+    private Sensor compassSensor;
+
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private final double EPSILON = 0.00001;
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
 
         //mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         //mSensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -211,6 +216,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         }
 
+        if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD) {
+            TextView compassText = (TextView) findViewById(R.id.compassText);
+            compassText.setText(String.valueOf((event.values[0]+"   "+event.values[1]+"   "+event.values[2])));
+        }
+
     }
 
 
@@ -224,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
         mGoogleApiClient.connect();
     }
 

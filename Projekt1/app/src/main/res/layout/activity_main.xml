@@ -11,30 +11,68 @@
     tools:context="com.example.rafzz.projekt1.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mLatitudeText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
+        android:text="not found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mLongitudeText"
         android:layout_below="@+id/mLatitudeText"
-        android:layout_toEndOf="@+id/mLatitudeText"
-        android:layout_toRightOf="@+id/mLatitudeText" />
+        android:layout_alignLeft="@+id/mLatitudeText"
+        android:layout_alignStart="@+id/mLatitudeText"
+        android:layout_marginTop="12dp" />
 
     <Button
-        android:text="Button"
+        android:text="Refresh"
         android:onClick="refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button2"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="94dp"
-        android:layout_marginEnd="94dp"
-        android:layout_marginBottom="77dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Latitude:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mLongitudeText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView" />
+
+    <TextView
+        android:text="Longitude:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/mLongitudeText"
+        android:id="@+id/textView2" />
+
+    <TextView
+        android:text="not found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mLatitudeText"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
+
+    <TextView
+        android:text="Light Sensor:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="25dp"
+        android:id="@+id/textView3" />
+
+    <TextView
+        android:text="not found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_alignLeft="@+id/mLongitudeText"
+        android:layout_alignStart="@+id/mLongitudeText"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:id="@+id/LightText" />
 </RelativeLayout>

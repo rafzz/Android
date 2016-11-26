@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.FloatMath;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
@@ -29,9 +32,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Location mLastLocation;
 
     private SensorManager mSensorManager;
+
     private Sensor lightSensor;
+    private Sensor gyroSensor;
+
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private final float[] deltaRotationVector = new float[4];
+    private final double EPSILON = 0.00001;
+    private float timestamp;
 
     private TextView LightText;
+    private TextView xText;
 
 
     @Override
@@ -40,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         LightText = (TextView) findViewById(R.id.LightText);
+        xText = (TextView) findViewById(R.id.xText);
 
 
         if (mGoogleApiClient == null) {
@@ -53,6 +65,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        //mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        //mSensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+
 
 
 
@@ -137,22 +155,76 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //light sensor----------------------------------------------------------------------------------------
     @Override
-    public final void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(SensorEvent event) {
         // The light sensor returns a single value.
         // Many sensors return 3 values, one for each axis.
-        float lux = event.values[0];
 
-        // Do something with this sensor value.
-        LightText.setText(String.valueOf(lux));
+
+        if(event.sensor.getType()==Sensor.TYPE_LIGHT){
+
+            float lux = event.values[0];
+            LightText.setText(String.valueOf(lux));
+        }
+
+
+        if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
+
+            if (timestamp != 0) {
+                final float dT = (event.timestamp - timestamp) * NS2S;
+                // Axis of the rotation sample, not normalized yet.
+                float axisX = event.values[0];
+                float axisY = event.values[1];
+                float axisZ = event.values[2];
+
+
+                xText.setText(String.valueOf(axisX));
+
+                // Calculate the angular speed of the sample
+                float omegaMagnitude = (float) Math.sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);
+
+                // Normalize the rotation vector if it's big enough to get the axis
+                // (that is, EPSILON should represent your maximum allowable margin of error)
+                if (omegaMagnitude > EPSILON) {
+                    axisX /= omegaMagnitude;
+                    axisY /= omegaMagnitude;
+                    axisZ /= omegaMagnitude;
+                }
+
+                // Integrate around this axis with the angular speed by the timestep
+                // in order to get a delta rotation from this sample over the timestep
+                // We will convert this axis-angle representation of the delta rotation
+                // into a quaternion before turning it into the rotation matrix.
+                float thetaOverTwo = omegaMagnitude * dT / 2.0f;
+                float sinThetaOverTwo = (float) Math.sin(thetaOverTwo);
+                float cosThetaOverTwo = (float) Math.cos(thetaOverTwo);
+                deltaRotationVector[0] = sinThetaOverTwo * axisX;
+                deltaRotationVector[1] = sinThetaOverTwo * axisY;
+                deltaRotationVector[2] = sinThetaOverTwo * axisZ;
+                deltaRotationVector[3] = cosThetaOverTwo;
+            }
+            timestamp = event.timestamp;
+            float[] deltaRotationMatrix = new float[9];
+            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+            // User code should concatenate the delta rotation we computed with the current rotation
+            // in order to get the updated rotation.
+            // rotationCurrent = rotationCurrent * deltaRotationMatrix;
+
+        }
+
     }
+
+
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
-    @Override
-    public void onResume(){
+
+    protected void onResume(){
         super.onResume();
-        mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
+        mGoogleApiClient.connect();
     }
 
     @Override

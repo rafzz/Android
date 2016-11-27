@@ -154,4 +154,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/compassText" />
+
+    <ToggleButton
+        android:text="ToggleButton"
+        android:onClick="light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/button2"
+        android:layout_alignLeft="@+id/LightText"
+        android:layout_alignStart="@+id/LightText"
+        android:id="@+id/toggleButton" />
 </RelativeLayout>

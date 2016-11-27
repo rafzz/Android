@@ -2,6 +2,7 @@ package com.example.rafzz.projekt1;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,30 +31,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-
     private SensorManager mSensorManager;
 
-    private Sensor lightSensor;
-    private Sensor gyroSensor;
-
-    private Sensor compassSensor;
-
-    private static final float NS2S = 1.0f / 1000000000.0f;
-    private final float[] deltaRotationVector = new float[4];
-    private final double EPSILON = 0.00001;
-    private float timestamp;
-
-    private TextView LightText;
-    private TextView xText;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            c = Camera.open();
+            parameters = c.getParameters();
+
+        }
+
         LightText = (TextView) findViewById(R.id.LightText);
         xText = (TextView) findViewById(R.id.xText);
+        yText = (TextView) findViewById(R.id.yText);
+        zText = (TextView) findViewById(R.id.zText);
 
 
         if (mGoogleApiClient == null) {
@@ -68,24 +63,35 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
         compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-
-        //mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        //mSensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
-
-
 
 
 
     }
+    //flashlight------------------------------------------------------------------------------------
+    private Camera c;
+    private Camera.Parameters parameters;
+
+    public void light(View v){
+        if(!v.isSelected()) {
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            c.setParameters(parameters);
+            c.startPreview();
+            v.setSelected(true);
+        }else if(v.isSelected()){
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            c.setParameters(parameters);
+            c.stopPreview();
+            v.setSelected(false);
+        }
+    }
+    //flashlight------------------------------------------------------------------------------------
 
 
 
 
 
-
+    //GPS-------------------------------------------------------------------------------------------
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -115,13 +121,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            //Double lat = mLastLocation.getLatitude();
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
         }
 
     }
-
 
     public void refresh(View view) {
         TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
@@ -157,8 +161,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+    //GPS-------------------------------------------------------------------------------------------
 
-    //light sensor----------------------------------------------------------------------------------------
+
+
+
+    //light sensor, gyroscope, compass--------------------------------------------------------------
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private final float[] deltaRotationVector = new float[4];
+    private final double EPSILON = 0.00001;
+    private float timestamp;
+
+    private TextView LightText;
+    private TextView xText;
+    private TextView yText;
+    private TextView zText;
+
+    private Sensor lightSensor;
+    private Sensor gyroSensor;
+    private Sensor compassSensor;
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         // The light sensor returns a single value.
@@ -171,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             LightText.setText(String.valueOf(lux));
         }
 
-
         if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
 
             if (timestamp != 0) {
@@ -183,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
                 xText.setText(String.valueOf(axisX));
+                yText.setText(String.valueOf(axisY));
+                zText.setText(String.valueOf(axisZ));
 
                 // Calculate the angular speed of the sample
                 float omegaMagnitude = (float) Math.sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);
@@ -218,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD) {
             TextView compassText = (TextView) findViewById(R.id.compassText);
-            compassText.setText(String.valueOf((event.values[0]+"   "+event.values[1]+"   "+event.values[2])));
+            compassText.setText(String.valueOf((event.values[0]+"  ,  "+event.values[1]+"  ,  "+event.values[2])));
         }
 
     }
@@ -243,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onPause();
         mSensorManager.unregisterListener(this);
     }
-    //light sensor----------------------------------------------------------------------------------------
+    //light sensor, gyroscope, compass--------------------------------------------------------------
 
 
 }

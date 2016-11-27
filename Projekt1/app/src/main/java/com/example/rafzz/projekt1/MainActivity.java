@@ -1,6 +1,7 @@
 package com.example.rafzz.projekt1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -68,6 +69,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     }
+    //maps------------------------------------------------------------------------------------------
+    public void openMaps(View v){
+        Intent i = new Intent(this, MapsActivity.class);
+        Bundle bun = new Bundle();
+        bun.putDouble("lat",mLastLocation.getLatitude());
+        bun.putDouble("lng",mLastLocation.getLongitude());
+        i.putExtras(bun);
+        startActivity(i);
+    }
+
+    //maps------------------------------------------------------------------------------------------
+
     //flashlight------------------------------------------------------------------------------------
     private Camera c;
     private Camera.Parameters parameters;

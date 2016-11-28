@@ -9,16 +9,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.FloatMath;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,11 +36,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            c = Camera.open();
-            parameters = c.getParameters();
 
-        }
 
         LightText = (TextView) findViewById(R.id.LightText);
         xText = (TextView) findViewById(R.id.xText);
@@ -100,11 +92,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     //flashlight------------------------------------------------------------------------------------
 
-
-
-
-
     //GPS-------------------------------------------------------------------------------------------
+    private TextView mLatitudeText;
+    private TextView mLongitudeText;
+
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -118,17 +109,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -141,17 +126,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void refresh(View view) {
-        TextView mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        TextView mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+
+        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -161,19 +141,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
         }
-
+        //recreate();
+        mGoogleApiClient.disconnect();
+        mGoogleApiClient.connect();
+        mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+        mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
 
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
+    public void onConnectionSuspended(int i) {}
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
     //GPS-------------------------------------------------------------------------------------------
 
 
@@ -198,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         // The light sensor returns a single value.
         // Many sensors return 3 values, one for each axis.
-
 
         if(event.sensor.getType()==Sensor.TYPE_LIGHT){
 
@@ -259,12 +237,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-
-
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
-
 
     protected void onResume(){
         super.onResume();
@@ -272,12 +246,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
         mGoogleApiClient.connect();
+
+        if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            c = Camera.open();   //flashlight
+            parameters = c.getParameters();
+
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+        c.release();//flashlight
     }
     //light sensor, gyroscope, compass--------------------------------------------------------------
 

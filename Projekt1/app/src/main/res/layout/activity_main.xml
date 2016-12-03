@@ -176,4 +176,16 @@
         android:layout_marginLeft="32dp"
         android:layout_marginStart="32dp"
         android:id="@+id/Maps" />
+
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_below="@+id/compassText"
+        android:layout_marginTop="32dp"
+        android:id="@+id/map"
+        android:layout_toRightOf="@+id/textView6"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/button2" />
 </RelativeLayout>

@@ -8,37 +8,32 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
 
 import static com.example.rafzz.projekt1.R.id.map;
 
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback {
 
 
     private GoogleMap mMap;
 
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
     private SensorManager mSensorManager;
+    private TextView mLatitudeText;
+    private TextView mLongitudeText;
+
+    public static boolean isActive=true;
+
+    private Async task;
 
     
     @Override
@@ -46,10 +41,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //Maps--------------------------------------------------------------------------------------
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
+        //Maps--------------------------------------------------------------------------------------
+
+
+        //GPS-------------------------------------------------------------------------------------------
+        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
+        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
+        task = new Async(mLongitudeText,mLatitudeText,MainActivity.this,mMap);
+        task.execute();
+        //GPS-------------------------------------------------------------------------------------------
 
 
 
@@ -59,16 +63,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         zText = (TextView) findViewById(R.id.zText);
 
 
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -76,17 +73,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     }
-    //maps------------------------------------------------------------------------------------------
-    public void openMaps(View v){
-        Intent i = new Intent(this, MapsActivity.class);
-        Bundle bun = new Bundle();
-        bun.putDouble("lat",mLastLocation.getLatitude());
-        bun.putDouble("lng",mLastLocation.getLongitude());
-        i.putExtras(bun);
-        startActivity(i);
-    }
 
-    //maps------------------------------------------------------------------------------------------
 
     //flashlight------------------------------------------------------------------------------------
     private Camera c;
@@ -107,78 +94,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     //flashlight------------------------------------------------------------------------------------
 
-    //GPS-------------------------------------------------------------------------------------------
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
+
+
 
     protected void onStart() {
-        mGoogleApiClient.connect();
+
         super.onStart();
     }
 
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+        task.cancel(true);
         super.onStop();
     }
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-        }
-
-        double lat = mLastLocation.getLatitude();
-        double lng = mLastLocation.getLongitude();
-
-
-        LatLng ll = new LatLng(lat,lng);
-        Marker m = mMap.addMarker(new MarkerOptions().position(ll).title("Sart_Marker"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll,14));
-
-    }
-
-    public void refresh(View view) {
-
-        mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
-        mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            //Double lat = mLastLocation.getLatitude();
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-        }
-        //recreate();
-        mGoogleApiClient.disconnect();
-        mGoogleApiClient.connect();
-        mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-        mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {}
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
-    //GPS-------------------------------------------------------------------------------------------
-
-
 
 
     //light sensor, gyroscope, compass--------------------------------------------------------------
@@ -195,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor lightSensor;
     private Sensor gyroSensor;
     private Sensor compassSensor;
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -264,11 +192,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
     protected void onResume(){
+        isActive=true;
         super.onResume();
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
-        mGoogleApiClient.connect();
+       // mGoogleApiClient.connect();
 
         if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             c = Camera.open();   //flashlight
@@ -280,34 +209,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
+        isActive=false;
         mSensorManager.unregisterListener(this);
         c.release();//flashlight
     }
+    //light sensor, gyroscope, compass--------------------------------------------------------------
 
+    //Maps------------------------------------------------------------------------------------------
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
         }
         mMap.setMyLocationEnabled(true);
-        /*
-        double lat = mLastLocation.getLatitude();
-        double lng = mLastLocation.getLongitude();
+
+        task.set_mMap(mMap);
 
 
-        LatLng ll = new LatLng(lat,lng);
-        Marker m = mMap.addMarker(new MarkerOptions().position(ll).title("Sart_Marker"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll,14));
-        */
+
     }
-    //light sensor, gyroscope, compass--------------------------------------------------------------
+
+    public void addMarker(View view){
+        task.mark();
+    }
+    //Maps------------------------------------------------------------------------------------------
 
 
 }

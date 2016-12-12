@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Kalkulator</string>
+    <color name="grey">#C0C0C0</color>
+    <color name="blue">#284c72</color>
+    <color name="bg">#808080</color>
+
+</resources>

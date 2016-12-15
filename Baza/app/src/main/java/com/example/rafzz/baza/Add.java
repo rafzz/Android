@@ -91,20 +91,26 @@ public class Add extends AppCompatActivity {
         Intent intentEdit = getIntent();
 
         if(ifedit){
-            String message = intentEdit.getStringExtra(MainActivity.EXTRA_MESSAGE);
+            //String message = intentEdit.getStringExtra(MainActivity.EXTRA_MESSAGE);
+            Bundle extras =  intentEdit.getExtras();
 
-            String messagesplit[] = message.split(", ");
-            imie.setText(messagesplit[0]);
-            wiek.setText(messagesplit[1]);
+            //String messagesplit[] = message.split(", ");
+
+            //imie.setText(messagesplit[0]);
+            imie.setText((String) extras.get("imie"));
+            //wiek.setText(messagesplit[1]);
+            wiek.setText((String) extras.get("wiek"));
             try{
-                mCurrentPhotoPath=messagesplit[3];
+                //mCurrentPhotoPath=messagesplit[3];
+                mCurrentPhotoPath=(String) extras.get("sciezka");
                 setPic();
             }catch(ArrayIndexOutOfBoundsException a){
 
             }
 
 
-            globnr = messagesplit[2];
+            //globnr = messagesplit[2];
+            globnr=(String) extras.get("id");
         }
     }
 

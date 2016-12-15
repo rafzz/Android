@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     public void openEdit(View view){
 
         Intent intentEdit = new Intent(this, Add.class);
-        //Bundle extras = new Bundle();
+        Bundle extras = new Bundle();
 
         String txt="";
         String id="";
@@ -175,11 +175,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        txtid = txt+", "+id+", "+sciezka;
+        String txtSplit[] = txt.split(", ");
+        String imie = txtSplit[0].substring(1);
+        String wiek = txtSplit[1];
 
-        //extras.putString(EXTRA_MESSAGE,txt);
-        //extras.putString(nr,id);
-        intentEdit.putExtra(EXTRA_MESSAGE ,txtid);
+        extras.putString("imie",imie);
+        extras.putString("wiek",wiek);
+        extras.putString("id",id);
+        extras.putString("sciezka",sciezka);
+        //txtid = txt+", "+id+", "+sciezka;
+
+
+        //intentEdit.putExtra(EXTRA_MESSAGE ,txtid);
+        intentEdit.putExtras(extras);
         startActivity(intentEdit);
     }
 

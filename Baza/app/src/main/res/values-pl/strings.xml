@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zbieracz Danych</string>
+    <string name="add">DODAJ</string>
+    <string name="removeAll">USUŃ WSZYSTKO</string>
+    <string name="summary">PODSUMOWANIE</string>
+    <string name="remove">USUN</string>
+    <string name="edit">EDYCJA</string>
+    <string name="name">Imię:</string>
+    <string name="age">Wiek:</string>
+    <string name="day">DD:</string>
+    <string name="month">MM:</string>
+    <string name="year">RRRR:</string>
+    <string name="save">ZAPISZ</string>
+    <string name="photo">ZRÓB ZDJĘCIE</string>
+</resources>

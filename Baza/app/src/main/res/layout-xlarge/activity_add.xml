@@ -45,8 +45,8 @@
         android:ems="10"
         android:id="@+id/editTextWiek"
         android:background="@color/grey"
-        android:layout_alignTop="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
+        android:layout_alignTop="@+id/labelWiek"
+        android:layout_toRightOf="@+id/labelWiek"
         android:layout_alignRight="@+id/foto"
         android:layout_alignEnd="@+id/foto" />
 
@@ -57,12 +57,12 @@
         android:ems="10"
         android:id="@+id/editTextDay"
         android:background="@color/grey"
-        android:layout_below="@+id/textView5"
-        android:layout_alignLeft="@+id/textView5"
-        android:layout_alignStart="@+id/textView5"
-        android:layout_toStartOf="@+id/Data_Ur"
-        android:layout_alignRight="@+id/textView5"
-        android:layout_alignEnd="@+id/textView5" />
+        android:layout_below="@+id/labelDay"
+        android:layout_alignLeft="@+id/labelDay"
+        android:layout_alignStart="@+id/labelDay"
+        android:layout_toStartOf="@+id/labelYear"
+        android:layout_alignRight="@+id/labelDay"
+        android:layout_alignEnd="@+id/labelDay" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -71,11 +71,11 @@
         android:ems="10"
         android:id="@+id/editTextMonth"
         android:background="@color/grey"
-        android:layout_below="@+id/textView6"
-        android:layout_alignLeft="@+id/textView6"
-        android:layout_alignStart="@+id/textView6"
-        android:layout_alignRight="@+id/textView6"
-        android:layout_alignEnd="@+id/textView6" />
+        android:layout_below="@+id/labelMonth"
+        android:layout_alignLeft="@+id/labelMonth"
+        android:layout_alignStart="@+id/labelMonth"
+        android:layout_alignRight="@+id/labelMonth"
+        android:layout_alignEnd="@+id/labelMonth" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -84,11 +84,11 @@
         android:ems="10"
         android:id="@+id/editTextYear"
         android:background="@color/grey"
-        android:layout_below="@+id/Data_Ur"
-        android:layout_alignLeft="@+id/Data_Ur"
-        android:layout_alignStart="@+id/Data_Ur"
-        android:layout_alignRight="@+id/Data_Ur"
-        android:layout_alignEnd="@+id/Data_Ur" />
+        android:layout_below="@+id/labelYear"
+        android:layout_alignLeft="@+id/labelYear"
+        android:layout_alignStart="@+id/labelYear"
+        android:layout_alignRight="@+id/labelYear"
+        android:layout_alignEnd="@+id/labelYear" />
 
     <Button
         android:text="Zrob Zdjecie"
@@ -104,9 +104,9 @@
         android:text="RRRR:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/Data_Ur"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
+        android:id="@+id/labelYear"
+        android:layout_alignBaseline="@+id/labelDay"
+        android:layout_alignBottom="@+id/labelDay"
         android:layout_alignRight="@+id/editTextWiek"
         android:layout_alignEnd="@+id/editTextWiek" />
 
@@ -114,7 +114,7 @@
         android:text="MM:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView6"
+        android:id="@+id/labelMonth"
         android:layout_below="@+id/editTextImie"
         android:layout_alignLeft="@+id/editTextImie"
         android:layout_alignStart="@+id/editTextImie"
@@ -124,7 +124,7 @@
         android:text="Wiek: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView3"
+        android:id="@+id/labelWiek"
         android:layout_below="@+id/editTextImie"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -134,9 +134,9 @@
         android:text="DD:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:layout_alignBaseline="@+id/textView6"
-        android:layout_alignBottom="@+id/textView6"
+        android:id="@+id/labelDay"
+        android:layout_alignBaseline="@+id/labelMonth"
+        android:layout_alignBottom="@+id/labelMonth"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

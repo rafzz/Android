@@ -1,6 +1,7 @@
 package com.example.rafzz.baza;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,19 +18,20 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static final int DODAJ_ACTIVITY_REQUEST_CODE = 1;
     protected static final String EXTRA_MESSAGE = "";
     //protected static final String nr = "";
-    private final String edit = "Edycja";
-    private final String del = "Usun";
+
     protected static  boolean ifedit = false;
 
     private LinqBaza zb = new LinqBaza(this);
 
+
     private ArrayList<TextView> listTV = new ArrayList<TextView>(){};
-    private ArrayList<ImageView> listIV = new ArrayList<ImageView>(){};
+    private ArrayList<Button> listB = new ArrayList<Button>(){};
 
 
 
@@ -44,6 +46,42 @@ public class MainActivity extends AppCompatActivity {
     public void openSummary(View v){
         //startActivity();
     }
+
+    static String language="default";
+
+    public void clickPL(View v){
+        //add = (Button) findViewById(R.id.buttonDodaj);
+        language="pl";
+        updateLocale();
+        //add.setText(R.string.add);
+
+    }
+    public void clickENG(View v){
+        //add = (Button) findViewById(R.id.buttonDodaj);
+        language="default";
+        updateLocale();
+        //add.setText(R.string.add);
+
+    }
+    private Button add;
+    private Button remove;
+    private Button summary;
+    public void updateLocale(){
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale=locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        add = (Button) findViewById(R.id.buttonDodaj);
+        add.setText(R.string.add);
+        remove = (Button) findViewById(R.id.buttonUsun);
+        remove.setText(R.string.remove);
+        summary = (Button) findViewById(R.id.buttonPods);
+        summary.setText(R.string.summary);
+        read();
+    }
+
+
 
 
     @Override
@@ -90,13 +128,13 @@ public class MainActivity extends AppCompatActivity {
 
 
             Button bEdit = new Button(this);
-            bEdit.setText(edit);
+            bEdit.setText(R.string.edit);
             bEdit.setId(nr);
 
             //layout.addView(bEdit);
 
             Button bRemove = new Button(this);
-            bRemove.setText(del);
+            bRemove.setText(R.string.remove);
             bRemove.setId(nr);
             //layout.addView(bRemove);
 

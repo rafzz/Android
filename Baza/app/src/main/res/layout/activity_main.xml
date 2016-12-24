@@ -40,7 +40,7 @@
 
 
             <Button
-                android:text="Usuń Wszystko"
+                android:text="@string/removeAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -50,7 +50,7 @@
                 android:id="@+id/buttonUsun" />
 
             <Button
-                android:text="Dodaj"
+                android:text="@string/add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -70,7 +70,7 @@
 </ScrollView>
 
     <Button
-        android:text="Podsumowanie"
+        android:text="@string/summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clsDB"
@@ -87,6 +87,7 @@
         android:id="@+id/buttonENG"
         android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
+        android:onClick="clickENG"
         android:layout_toRightOf="@+id/buttonPods" />
 
     <Button
@@ -95,6 +96,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
+        android:onClick="clickPL"
         android:layout_toRightOf="@+id/buttonENG"
         android:layout_toEndOf="@+id/buttonENG" />
 

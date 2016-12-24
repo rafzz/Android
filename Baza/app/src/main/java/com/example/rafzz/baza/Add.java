@@ -1,6 +1,7 @@
 package com.example.rafzz.baza;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -11,14 +12,17 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.example.rafzz.baza.MainActivity.ifedit;
 
@@ -34,8 +38,37 @@ public class Add extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-        //mCurrentPhotoPath="";
+        updateLocale();
 
+    }
+
+    private Button save;
+    private Button photo;
+    private TextView name;
+    private TextView age;
+    private TextView day;
+    private TextView month;
+    private TextView year;
+    public void updateLocale(){
+        Locale locale = new Locale(MainActivity.language);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale=locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        save = (Button) findViewById(R.id.buttonZapisz);
+        save.setText(R.string.save);
+        photo = (Button) findViewById(R.id.foto);
+        photo.setText(R.string.photo);
+        name = (TextView) findViewById(R.id.LabelImie);
+        name.setText(R.string.name);
+        age = (TextView) findViewById(R.id.labelWiek);
+        age.setText(R.string.age);
+        day = (TextView) findViewById(R.id.labelDay);
+        day.setText(R.string.day);
+        month = (TextView) findViewById(R.id.labelMonth);
+        month.setText(R.string.month);
+        year = (TextView) findViewById(R.id.labelYear);
+        year.setText(R.string.year);
     }
 
     @Override

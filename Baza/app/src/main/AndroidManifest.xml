@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Add"></activity>
+        <activity android:name=".Add" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -35,6 +35,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity android:name=".Summary"></activity>
     </application>
 
 </manifest>

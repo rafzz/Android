@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void openSummary(View v){
+        //startActivity();
+    }
+
 
     @Override
     public void onResume(){
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             String imie=k.getString(1);
             int wiek=k.getInt(2);
             String sciezka=k.getString(3);
+            String data = k.getString(4);
 
             TableRow tr1 = new TableRow(this);
 
@@ -67,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             TextView tt = new TextView(this);
 
             tt.setTextSize(24);
-            tt.setText("\n"+imie+", "+wiek);
+            tt.setText("\n"+imie+", "+wiek+", "+data);
             tt.setId(nr);
             String s = sciezka;
             tt.setTag(s);
@@ -160,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         String txt="";
         String id="";
         String sciezka="";
+
         String txtid;
         ifedit=true;
         for(TextView t : listTV){
@@ -178,11 +184,14 @@ public class MainActivity extends AppCompatActivity {
         String txtSplit[] = txt.split(", ");
         String imie = txtSplit[0].substring(1);
         String wiek = txtSplit[1];
+        String data = txtSplit[2];
 
         extras.putString("imie",imie);
         extras.putString("wiek",wiek);
         extras.putString("id",id);
         extras.putString("sciezka",sciezka);
+        extras.putString("data",data);
+
         //txtid = txt+", "+id+", "+sciezka;
 
 

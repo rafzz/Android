@@ -34,44 +34,60 @@ public class Add extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        //mCurrentPhotoPath="";
 
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        //mCurrentPhotoPath="";
     }
 
     @Override
     public void  onDestroy(){
         super.onDestroy();
         ifedit=false;
+        //EditText imie = (EditText) findViewById(R.id.editTextImie);
+        //imie.setText("niszcze");
+        //mCurrentPhotoPath=null;
     }
 
     public void save(View view){
         EditText imie = (EditText) findViewById(R.id.editTextImie);
         EditText wiek = (EditText) findViewById(R.id.editTextWiek);
         ImageView zdjecie = (ImageView) findViewById(R.id.imageView);
+        EditText dd = (EditText) findViewById(R.id.editTextDay);
+        EditText mm = (EditText) findViewById(R.id.editTextMonth);
+        EditText rrrr = (EditText) findViewById(R.id.editTextYear);
 
-        String response = imie.getText()+", "+wiek.getText();
+        //String response = imie.getText()+", "+wiek.getText();
 
         LinqBaza zb = new LinqBaza(this);
 
         if(ifedit){
             ifedit=false;
 
-            zb.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath);
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(RESPONSE, response);
-            setResult(RESULT_OK, resultIntent);
+            zb.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath,dd.getText().toString()+"/"+mm.getText().toString()+"/"+rrrr.getText().toString());
+            //Intent resultIntent = new Intent();
+            //resultIntent.putExtra(RESPONSE, response);
+            //setResult(RESULT_OK, resultIntent);
 
 
         }else{
-            zb.addData(imie.getText().toString(),Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath);
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(RESPONSE, response);
-            setResult(RESULT_OK, resultIntent);
+            zb.addData(imie.getText().toString(),Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath,dd.getText().toString()+"/"+mm.getText().toString()+"/"+rrrr.getText().toString());
+            //Intent resultIntent = new Intent();
+            //resultIntent.putExtra(RESPONSE, response);
+            //setResult(RESULT_OK, resultIntent);
         }
 
 
         this.finish();
+        mCurrentPhotoPath=null;
 
     }
+
+
     @Override
     public void onResume(){
         super.onResume();
@@ -87,6 +103,9 @@ public class Add extends AppCompatActivity {
         EditText imie = (EditText) findViewById(R.id.editTextImie);
         EditText wiek = (EditText) findViewById(R.id.editTextWiek);
         ImageView zdjecie = (ImageView) findViewById(R.id.imageView);
+        EditText dd = (EditText) findViewById(R.id.editTextDay);
+        EditText mm = (EditText) findViewById(R.id.editTextMonth);
+        EditText rrrr = (EditText) findViewById(R.id.editTextYear);
 
         Intent intentEdit = getIntent();
 
@@ -100,6 +119,12 @@ public class Add extends AppCompatActivity {
             imie.setText((String) extras.get("imie"));
             //wiek.setText(messagesplit[1]);
             wiek.setText((String) extras.get("wiek"));
+            String data = (String) extras.get("data");
+            String dataSplit[] = data.split("/");
+            dd.setText(dataSplit[0]);
+            mm.setText(dataSplit[1]);
+            rrrr.setText(dataSplit[2]);
+
             try{
                 //mCurrentPhotoPath=messagesplit[3];
                 mCurrentPhotoPath=(String) extras.get("sciezka");
@@ -114,7 +139,7 @@ public class Add extends AppCompatActivity {
         }
     }
 
-    private String mCurrentPhotoPath;
+    private static String mCurrentPhotoPath;
 
     public File createImageFile() throws IOException {
         // Create an image file name

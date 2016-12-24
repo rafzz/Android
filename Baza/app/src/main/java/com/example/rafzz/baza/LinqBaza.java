@@ -20,9 +20,10 @@ public class LinqBaza extends SQLiteOpenHelper{
     private static final String age = "wiek";
     private static final String db_name = "dane.db";
     private static final String path = "sciezka";
+    private static final String data_ur = "data_ur";
 
     public LinqBaza(Context context) {
-        super(context, db_name, null, 3);
+        super(context, db_name, null, 5);
     }
 
     @Override
@@ -32,7 +33,9 @@ public class LinqBaza extends SQLiteOpenHelper{
                 "create table "+ table_name +"(" +
                         pk_name+" integer primary key autoincrement," +
                         name+" text," +
-                        age+" integer);" +
+                        age+" integer, "+
+                        path+" text, "+
+                        data_ur+" text);" +
                         "");
     }
 
@@ -41,22 +44,24 @@ public class LinqBaza extends SQLiteOpenHelper{
         // If you need to add a column
         if (newVersion > oldVersion) {
             db.execSQL("ALTER TABLE osoby ADD COLUMN sciezka text");
+            db.execSQL("ALTER TABLE osoby ADD COLUMN data_ur text");
         }
     }
 
 
 
-    public void addData(String name,int age,String path){
+    public void addData(String name,int age,String path, String data_ur){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(this.name, name);
         values.put(this.age,age);
         values.put(this.path,path);
+        values.put(this.data_ur,data_ur);
         db.insertOrThrow(table_name,null, values);
     }
 
     public Cursor writeAllData(){
-        String[] column={pk_name,name,age,path};
+        String[] column={pk_name,name,age,path,data_ur};
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor =db.query(table_name,column,null,null,null,null,null);
         return cursor;
@@ -67,12 +72,13 @@ public class LinqBaza extends SQLiteOpenHelper{
         db.delete(table_name, null, null);
     }
 
-    public void updateData(int id, String name, int age,String path){
+    public void updateData(int id, String name, int age,String path, String data_ur){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(this.name, name);
         values.put(this.age, age);
         values.put(this.path,path);
+        values.put(this.data_ur,data_ur);
         String[] args={""+id};
         db.update(table_name, values,pk_name+"=?",args);
     }

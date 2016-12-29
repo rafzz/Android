@@ -8,21 +8,31 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 
 import static com.example.rafzz.projekt1.R.id.map;
 
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
     private GoogleMap mMap;
@@ -31,11 +41,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLatitudeText;
     private TextView mLongitudeText;
 
-    public static boolean isActive=true;
+    public static boolean isActive = true;
+
+    protected static GoogleApiClient mGoogleApiClient;
 
     private Async task;
 
-    
+    LocationRequest locationRequest;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,15 +60,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
         //Maps--------------------------------------------------------------------------------------
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
 
         //GPS-------------------------------------------------------------------------------------------
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-        task = new Async(mLongitudeText,mLatitudeText,MainActivity.this,mMap);
-        task.execute();
+        //task = new Async(mLongitudeText,mLatitudeText,MainActivity.this,mMap);
+        //task.execute();
         //GPS-------------------------------------------------------------------------------------------
-
 
 
         LightText = (TextView) findViewById(R.id.LightText);
@@ -63,15 +83,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         zText = (TextView) findViewById(R.id.zText);
 
 
-
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
 
+    }
 
+    public void openMap(View v) {
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        Bundle locationBundle = new Bundle();
+
+        locationBundle.putDouble("latitude",mLastLocation.getLatitude());
+        locationBundle.putDouble("longitude",mLastLocation.getLongitude());
+        mapIntent.putExtras(locationBundle);
+
+        startActivity(mapIntent);
     }
 
 
@@ -79,13 +107,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Camera c;
     private Camera.Parameters parameters;
 
-    public void light(View v){
-        if(!v.isSelected()) {
+    public void light(View v) {
+        if (!v.isSelected()) {
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             c.setParameters(parameters);
             c.startPreview();
             v.setSelected(true);
-        }else if(v.isSelected()){
+        } else if (v.isSelected()) {
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             c.setParameters(parameters);
             c.stopPreview();
@@ -95,15 +123,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //flashlight------------------------------------------------------------------------------------
 
 
-
-
     protected void onStart() {
 
         super.onStart();
+        mGoogleApiClient.connect();
     }
 
     protected void onStop() {
-        task.cancel(true);
+        //task.cancel(true);
+
         super.onStop();
     }
 
@@ -129,13 +157,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // The light sensor returns a single value.
         // Many sensors return 3 values, one for each axis.
 
-        if(event.sensor.getType()==Sensor.TYPE_LIGHT){
+        if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
 
             float lux = event.values[0];
             LightText.setText(String.valueOf(lux));
         }
 
-        if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 
             if (timestamp != 0) {
                 final float dT = (event.timestamp - timestamp) * NS2S;
@@ -181,25 +209,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         }
 
-        if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD) {
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             TextView compassText = (TextView) findViewById(R.id.compassText);
-            compassText.setText(String.valueOf((event.values[0]+"  ,  "+event.values[1]+"  ,  "+event.values[2])));
+            compassText.setText(String.valueOf((event.values[0] + "  ,  " + event.values[1] + "  ,  " + event.values[2])));
         }
 
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {}
+    public void onAccuracyChanged(Sensor sensor, int i) {
+    }
 
-    protected void onResume(){
-        isActive=true;
+    protected void onResume() {
+        isActive = true;
         super.onResume();
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
-       // mGoogleApiClient.connect();
+        // mGoogleApiClient.connect();
 
-        if(getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             c = Camera.open();   //flashlight
             parameters = c.getParameters();
 
@@ -209,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        isActive=false;
+        isActive = false;
         mSensorManager.unregisterListener(this);
         c.release();//flashlight
     }
@@ -226,16 +255,62 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         mMap.setMyLocationEnabled(true);
 
-        task.set_mMap(mMap);
 
+
+        //task.set_mMap(mMap);
 
 
     }
 
-    public void addMarker(View view){
-        task.mark();
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        mLatitudeText.setText(String.valueOf(location.getLatitude()));
+        mLongitudeText.setText(String.valueOf(location.getLongitude()));
+
+        double lat = mLastLocation.getLatitude();
+        double lng = mLastLocation.getLongitude();
+        LatLng ll = new LatLng(lat, lng);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
     }
     //Maps------------------------------------------------------------------------------------------
 
+    private Location mLastLocation;
+    //private Location mCurrentLocation;
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+
+    }
+
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
 }

@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.example.rafzz.baza.MainActivity.ifedit;
-
+import static com.example.rafzz.baza.MainActivity.summaryReport;
 
 
 public class Add extends AppCompatActivity {
@@ -39,6 +39,7 @@ public class Add extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         updateLocale();
+
 
     }
 
@@ -107,11 +108,13 @@ public class Add extends AppCompatActivity {
             //setResult(RESULT_OK, resultIntent);
 
 
+
         }else{
             zb.addData(imie.getText().toString(),Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath,dd.getText().toString()+"/"+mm.getText().toString()+"/"+rrrr.getText().toString());
             //Intent resultIntent = new Intent();
             //resultIntent.putExtra(RESPONSE, response);
             //setResult(RESULT_OK, resultIntent);
+            MainActivity.summaryReport+="\nADD: "+imie.getText().toString()+" "+wiek.getText().toString();
         }
 
 

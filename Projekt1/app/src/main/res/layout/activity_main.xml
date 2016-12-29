@@ -12,7 +12,7 @@
 
     <TextView
         android:text="not found"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mLongitudeText"
         android:layout_below="@+id/mLatitudeText"
@@ -38,7 +38,7 @@
 
     <TextView
         android:text="not found"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mLatitudeText"
         android:layout_marginLeft="20dp"
@@ -49,7 +49,7 @@
 
     <TextView
         android:text="not found"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textView3"
         android:layout_alignLeft="@+id/mLongitudeText"
@@ -138,7 +138,7 @@
         android:id="@+id/compassText" />
 
     <fragment
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map"
@@ -171,7 +171,16 @@
         android:layout_marginTop="21dp"
         android:textOff="Light Off"
         android:textOn="Light On"
+        android:layout_toStartOf="@+id/button2" />
+
+    <Button
+        android:text="OPEN MAP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/map"
+        android:onClick="openMap"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:id="@+id/MapOpen" />
 
 </RelativeLayout>

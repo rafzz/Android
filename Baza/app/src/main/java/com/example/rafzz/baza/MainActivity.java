@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private LinqBaza zb = new LinqBaza(this);
 
+    static String summaryReport="";
+
 
     private ArrayList<TextView> listTV = new ArrayList<TextView>(){};
     private ArrayList<Button> listB = new ArrayList<Button>(){};
@@ -41,10 +43,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //zb.addData("sdfs",3,"sfds");
 
+
     }
 
     public void openSummary(View v){
-        //startActivity();
+        Intent intentSum = new Intent(this, Summary.class);
+        //intentSum.putExtra("sum",summaryReport);
+        startActivity(intentSum);
     }
 
     static String language="default";
@@ -229,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
         extras.putString("id",id);
         extras.putString("sciezka",sciezka);
         extras.putString("data",data);
+        MainActivity.summaryReport+="\nEDIT: "+imie+" "+wiek;
 
         //txtid = txt+", "+id+", "+sciezka;
 
@@ -240,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void remove(View v){
         zb.removeData(v.getId());
+        MainActivity.summaryReport+="\nREMOVED ID: "+v.getId();
         read();
     }
 
@@ -252,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
     public void clsDB(View view){
         cls();
         zb.removeAllData();
+        MainActivity.summaryReport+="\nALL REMOVED";
     }
 
 

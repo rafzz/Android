@@ -53,11 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle bun = mapIntent.getExtras();
         LatLng ll = new LatLng(bun.getDouble("latitude"), bun.getDouble("longitude"));
         mLatLang = ll;
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(ll).title("Marker in Sydney"));
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
 
         locationRequest = LocationRequest.create();
@@ -81,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
 
 
-
+        //dotawac wszystkie punkty do listy i for each
         mMap.addPolyline(new PolylineOptions()
                 .add(mLatLang, new LatLng(location.getLatitude(), location.getLongitude()))
                 .width(5).color(Color.BLUE).geodesic(true));

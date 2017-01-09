@@ -22,16 +22,16 @@ import java.util.Stack;
 public class MainActivity extends AppCompatActivity {
 
     protected static final String EXTRA_MESSAGE = "com.example.rafzz.kalkulator";
-    private String equation = "";
-    protected String hist = "";
-
     private final int signLength = 3;
-
+    private final int textSize = 35;
+    private final int weight4 = 4;
+    private final int weight2 = 2;
+    private final int weight3 = 3;
+    protected String hist = "";
+    private String equation = "";
     private Sign sign;
     private boolean signFlag = false;  //true if sign was written
     private boolean dotflag = false;
-    private final int textSize = 35;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,108 +40,144 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextSize(textSize);
 
-        Layout lay1 = new PatternLayout("[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x");
-        Appender app1 = new ConsoleAppender(lay1);
-        BasicConfigurator.configure(app1);
+        Layout lay1 = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
+        Appender app1 = new ConsoleAppender( lay1 );
+        BasicConfigurator.configure( app1 );
         Logger logger = Logger.getRootLogger();
-        logger.debug("LOG");
-
-
+        logger.debug( "LOG" );
     }
 
+
+    //WirteValidation
     public boolean ifNoSignWrittenAndWritingSign(String butText, boolean signFlag){
 
         return signFlag == false &&
                 (butText.equals(sign.ADD.toSign()) ||
-                        butText.equals(sign.SUBSTRACT.toSign()) ||
-                        butText.equals(sign.MULTIPLY.toSign()) ||
-                        butText.equals(sign.DIVIDE.toSign()) ||
-                        butText.equals(sign.POW.toSign()));
+                 butText.equals(sign.SUBSTRACT.toSign()) ||
+                 butText.equals(sign.MULTIPLY.toSign()) ||
+                 butText.equals(sign.DIVIDE.toSign()) ||
+                 butText.equals(sign.POW.toSign()));
     }
 
-    public boolean dotPressed(String butText){
+    public boolean ifSignWrittenAndWrittingSign( String butText, boolean signFlag ){
 
-        return butText.equals(sign.DOT.toString());
+        return signFlag == true &&
+                ( butText.equals( sign.ADD.toSign() ) ||
+                butText.equals( sign.SUBSTRACT.toSign() ) ||
+                butText.equals( sign.MULTIPLY.toSign() ) ||
+                butText.equals( sign.DIVIDE.toSign() ) ||
+                butText.equals( sign.POW.toSign() ) );
     }
 
-    public boolean ifEquationIsNotEmptyAndDotWasntWritten(boolean dotflag,String equation){
-        return (equation.length() > 0 && dotflag == false && equation.charAt(equation.length() - 1) != ' ');
+    public boolean ifNoSignWrittenAndWrittingNoSign( String butText, boolean signFlag ){
+        return signFlag == false &&
+                ( !butText.equals( sign.ADD.toSign() ) ||
+                !butText.equals( sign.SUBSTRACT.toSign() ) ||
+                !butText.equals( sign.MULTIPLY.toSign() ) ||
+                !butText.equals( sign.DIVIDE.toSign() ) ||
+                !butText.equals( sign.POW.toSign() ) );
     }
 
-    
+    public boolean ifSignWrittenAndWrittingNoSign( String butText, boolean signFlag ){
+        return signFlag == true &&
+                ( !butText.equals( sign.ADD.toSign() ) ||
+                        !butText.equals( sign.SUBSTRACT.toSign() ) ||
+                        !butText.equals( sign.MULTIPLY.toSign() ) ||
+                        !butText.equals( sign.DIVIDE.toSign() ) ||
+                        !butText.equals( sign.POW.toSign() ) );
+    }
+
+    public boolean dotPressed( String butText ){
+
+        return butText.equals( sign.DOT.toString() );
+    }
+
+    public boolean ifEquationIsNotEmptyAndDotWasntWritten( boolean dotflag, String equation ){
+        return ( equation.length() > 0 && dotflag == false && equation.charAt( equation.length() - 1 ) != ' ' );
+    }
+    //WriteValidation
 
 
+    public void write( View view ) {
 
-
-    public void write(View view) {
-
-        TextView textView = (TextView) findViewById(R.id.textView);
-        Button button = (Button) view;
+        TextView textView = ( TextView ) findViewById( R.id.textView );
+        Button button = ( Button ) view;
         String butText = button.getText().toString();
 
 
-        if (dotPressed(butText)) {
-            if (ifEquationIsNotEmptyAndDotWasntWritten(dotflag,equation)) {
+        if ( dotPressed( butText ) ) {
+            if (ifEquationIsNotEmptyAndDotWasntWritten( dotflag, equation ) ) {
+
                 dotflag = true;
-                textView.setText(textView.getText().toString() + button.getText().toString());
+                textView.setText( textView.getText().toString() + button.getText().toString() );
                 equation += button.getText().toString();
                 return;
+
             } else {
                 return;
             }
         }
 
-        if (ifNoSignWrittenAndWritingSign(butText,signFlag)) {
+        if ( ifNoSignWrittenAndWritingSign( butText, signFlag ) ) {
+
             signFlag = true;
             dotflag = false;
             equation += button.getText().toString();
-            textView.setText(textView.getText().toString() + button.getText().toString());
+            textView.setText( textView.getText().toString() + button.getText().toString() );
 
-        } else if (signFlag == true && (butText.equals(sign.ADD.toSign()) || butText.equals(sign.SUBSTRACT.toSign()) ||
-                butText.equals(sign.MULTIPLY.toSign()) || butText.equals(sign.DIVIDE.toSign()) || butText.equals(sign.POW.toSign()))) {
+        } else if ( ifSignWrittenAndWrittingSign( butText, signFlag ) ) {
+
             equation += "";
             textView.setText(textView.getText().toString() + "");
 
-        } else if (signFlag == false && (!butText.equals(sign.ADD.toSign()) || !butText.equals(sign.SUBSTRACT.toSign()) ||
-                !butText.equals(sign.MULTIPLY.toSign()) || !butText.equals(sign.DIVIDE.toSign()) || !butText.equals(sign.POW.toSign()))) {
+        } else if ( ifNoSignWrittenAndWrittingNoSign( butText, signFlag ) ) {
+
             equation += button.getText().toString();
             textView.setText(textView.getText().toString() + button.getText().toString());
 
-        } else if (signFlag == true && (!butText.equals(sign.ADD.toSign()) || !butText.equals(sign.SUBSTRACT.toSign()) ||
-                !butText.equals(sign.MULTIPLY.toSign()) || !butText.equals(sign.DIVIDE.toSign()) || !butText.equals(sign.POW.toSign()))) {
+        } else if ( ifSignWrittenAndWrittingNoSign( butText, signFlag ) ) {
+
             signFlag = false;
             equation += button.getText().toString();
-            textView.setText(textView.getText().toString() + button.getText().toString());
+            textView.setText( textView.getText().toString() + button.getText().toString() );
         }
 
 
     }
 
-    //validation
-    public boolean ifEquationEqualsEmpty(String equation) {
-        return equation.equals("");
+    //ResultValidation
+    public boolean ifEquationEqualsEmpty( String equation ) {
+        return equation.equals( "" );
     }
 
+    public boolean ifEquationEqualsSingleSign( String equation, boolean signFlag ){
+        return signFlag ||
+                equation.charAt( 1 ) == sign.ADD.toChar() ||
+                equation.charAt( 1 ) == sign.SUBSTRACT.toChar() ||
+                equation.charAt( 1 ) == sign.MULTIPLY.toChar() ||
+                equation.charAt( 1 ) == sign.DIVIDE.toChar() ||
+                equation.charAt( 1 ) == sign.POW.toChar();
+    }
 
-    public void result(View view) {
+    public boolean ifEquationContainsNoSign( String equation ){
+        return !equation.contains( sign.ADD.toString() ) &&
+                !equation.contains( sign.SUBSTRACT.toString() ) &&
+                !equation.contains( sign.MULTIPLY.toString() ) &&
+                !equation.contains( sign.POW.toString() ) &&
+                !equation.contains( sign.DIVIDE.toString() );
+    }
+    //ResultValidation
 
-        TextView textView = (TextView) findViewById(R.id.textView);
+    public void result( View view ) {
 
-        if (ifEquationEqualsEmpty(equation)) {
-            return;
-        }
+        TextView textView = ( TextView ) findViewById( R.id.textView );
 
-        if (signFlag || equation.charAt(1) == sign.ADD.toChar() || equation.charAt(1) == sign.SUBSTRACT.toChar() ||
-                equation.charAt(1) == sign.MULTIPLY.toChar() || equation.charAt(1) == sign.DIVIDE.toChar() ||
-                equation.charAt(1) == sign.POW.toChar()) {
-            return;
-        }
+        if (ifEquationEqualsEmpty(equation) || textView.length()==1 ) { return; }
 
-        if (!equation.contains(sign.ADD.toString()) && !equation.contains(sign.SUBSTRACT.toString()) && !equation.contains(sign.MULTIPLY.toString()) &&
-                !equation.contains(sign.POW.toString()) && !equation.contains(sign.DIVIDE.toString())) {
-            return;
-        }
+        if (ifEquationEqualsSingleSign( equation, signFlag ) ) { return; }
 
+        if (ifEquationContainsNoSign( equation ) ) { return; }
+        /*
         if (equation.length() > signLength && equation.charAt(1) == sign.ADD.toChar()) {
             return;
         } else if (equation.length() > signLength && equation.charAt(1) == sign.SUBSTRACT.toChar()) {
@@ -153,67 +189,67 @@ public class MainActivity extends AppCompatActivity {
         } else if (equation.length() > signLength && equation.charAt(1) == sign.POW.toChar()) {
             return;
         }
+        */
 
+        String componentsTab[] = equation.split(" ");
+        Stack stack = new Stack();
+        Dictionary signDict = new Hashtable(); //contains weights of signs
 
-        String wyr = equation;
-        String wyrTab[] = wyr.split(" ");
-        Stack oper = new Stack();
-        Dictionary dict = new Hashtable();
-        dict.put(sign.POW.toString(), 4);
-        dict.put(sign.MULTIPLY.toString(), 3);
-        dict.put(sign.DIVIDE.toString(), 3);
-        dict.put(sign.ADD.toString(), 2);
-        dict.put(sign.SUBSTRACT.toString(), 2);
-        String output = "";
+        signDict.put( sign.POW.toString(), weight4 );
+        signDict.put( sign.MULTIPLY.toString(), weight3 );
+        signDict.put( sign.DIVIDE.toString(), weight3 );
+        signDict.put( sign.ADD.toString(), weight2 );
+        signDict.put( sign.SUBSTRACT.toString(), weight2 );
+        String output = ""; // constins equation formated to RPN
 
-        for (String c : wyrTab) {
+        for ( String component : componentsTab ) { //component >> single number or sign
 
-            if (oper.size() == 0) {
+            if ( stack.size() == 0 ) {
                 try {
-                    output += Double.parseDouble(c);
-                } catch (NumberFormatException e) {
-                    oper.push(c);
+                    output += Double.parseDouble( component );
+                } catch ( NumberFormatException e ) {
+                    stack.push( component );
                 }
             } else {
                 try {
-                    output += " " + Double.parseDouble(c);
-                } catch (NumberFormatException e) {
-                    while (!oper.isEmpty() && (int) dict.get(c) <= (int) dict.get(oper.peek())) {
-                        output += " " + oper.pop();
+                    output += " " + Double.parseDouble( component );
+                } catch ( NumberFormatException e ) {
+                    while ( !stack.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stack.peek() ) ) {
+                        output += " " + stack.pop();
                     }
-                    oper.push(c);
+                    stack.push( component );
 
-                    if ((int) dict.get(c) > (int) dict.get(oper.peek())) {
-                        oper.push(c);
+                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stack.peek() ) ) {
+                        stack.push( component );
                     }
                 }
             }
         }
-        for (int i = 0; i <= oper.size(); i++) {
-            output += " " + oper.pop();
+        for ( int i = 0; i <= stack.size(); i++ ) {
+            output += " " + stack.pop();
         }
-        Stack stack = new Stack();
+        stack = new Stack();
 
-        String outTab[] = output.split(" ");
+        String outTab[] = output.split( " " );
 
-        for (String s : outTab) {
+        for ( String component : outTab ) {
 
             try {
-                stack.push(Double.parseDouble(s));
-            } catch (NumberFormatException e) {
-                Double a = (Double) stack.pop();
-                Double b = (Double) stack.pop();
+                stack.push( Double.parseDouble( component ) );
+            } catch ( NumberFormatException exception ) {
+                Double a = ( Double ) stack.pop(); // first component of equation
+                Double b = ( Double ) stack.pop(); // second component of equation
 
-                if (s.equals(sign.ADD.toString())) {
-                    stack.push(b + a);
-                } else if (s.equals(sign.SUBSTRACT.toString())) {
-                    stack.push(b - a);
-                } else if (s.equals(sign.MULTIPLY.toString())) {
-                    stack.push(b * a);
-                } else if (s.equals(sign.DIVIDE.toString())) {
-                    stack.push(b / a);
-                } else if (s.equals(sign.POW.toString())) {
-                    stack.push(Math.pow(b, a));
+                if ( component.equals( sign.ADD.toString() ) ) {
+                    stack.push( b + a );
+                } else if ( component.equals( sign.SUBSTRACT.toString() ) ) {
+                    stack.push( b - a );
+                } else if ( component.equals( sign.MULTIPLY.toString() ) ) {
+                    stack.push( b * a );
+                } else if ( component.equals( sign.DIVIDE.toString() ) ) {
+                    stack.push( b / a );
+                } else if ( component.equals( sign.POW.toString() ) ) {
+                    stack.push(Math.pow( b, a ) );
                 }
             }
         }
@@ -221,54 +257,69 @@ public class MainActivity extends AppCompatActivity {
 
         equation = "";
 
-        textView.setText(stack.peek().toString());
+        textView.setText( stack.peek().toString() );
+
         equation = textView.getText().toString();
         try {
-            Double.parseDouble(equation);
+
+            Double.parseDouble( equation );
             dotflag = true;
-        } catch (NumberFormatException e) {
-        }
+
+        } catch (NumberFormatException exception) {}
 
 
     }
 
-    public void openHistory(View view) {
-        Intent intent = new Intent(this, HistoryActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, hist);
-        startActivity(intent);
+    public void openHistory( View view ) {
+        Intent intent = new Intent( this, HistoryActivity.class );
+        intent.putExtra( EXTRA_MESSAGE, hist );
+        startActivity( intent );
 
     }
 
-    public void cls(View view) {
+    public void cls( View view ) {
         dotflag = false;
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(null);
+        TextView textView = ( TextView ) findViewById( R.id.textView );
+        textView.setText( null );
         equation = "";
-
-
     }
 
-    public void ce(View view) {
-        TextView textView = (TextView) findViewById(R.id.textView);
+    //ce validation
+    public boolean ifEquationEmpty( String equation ){
+        return equation == null || equation.length() == 0;
+    }
 
-        if (equation == null || equation.length() == 0) {
+    public boolean ifEquationLastIsDot( String equation ){
+        return equation.charAt(equation.length() - 1) == sign.DOT.toChar();
+    }
+
+    public boolean ifEquationLastIsSign( String equation ) {
+        return equation.charAt(equation.length() - 1) == ' ';
+    }
+    //ce validation
+
+    public void ce( View view ) {
+        TextView textView = ( TextView ) findViewById( R.id.textView );
+
+        if ( ifEquationEmpty( equation ) ) {
             return;
         } else {
-            if (equation.charAt(equation.length() - 1) == sign.DOT.toChar()) {
+            if ( ifEquationLastIsDot( equation ) ) {
                 dotflag = false;
             }
-            if (equation.charAt(equation.length() - 1) == ' ') {
-                equation = equation.substring(0, equation.length() - 3);
-                textView.setText(equation);
+            if ( ifEquationLastIsSign( equation ) ) {
+
+                equation = equation.substring( 0, equation.length() - signLength );
+                textView.setText( equation );
                 return;
             }
-            equation = equation.substring(0, equation.length() - 1);
-            textView.setText(equation);
+            equation = equation.substring( 0, equation.length() - 1 );
+            textView.setText( equation );
         }
 
     }
 
-    public void clsHistory(View view) {
+    public void clsHistory( View view ) {
         hist = "";
     }
 

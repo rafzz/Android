@@ -33,7 +33,7 @@ public enum Sign {
             case DOT:
                 return ".";
         }
-        return "";
+        return null;
 
     }
 
@@ -79,12 +79,7 @@ public enum Sign {
             case DOT:
                 return " . ";
         }
-        return "";
+        return null;
 
     }
-
-
-
-
-
 }

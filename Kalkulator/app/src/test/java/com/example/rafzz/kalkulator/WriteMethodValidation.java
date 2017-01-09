@@ -12,30 +12,45 @@ import org.junit.runner.RunWith;
 public class WriteMethodValidation {
 
     //ifNoSignWrittenAndWritingSign
+    //ifSignWrittenAndWrittingSign
     @Test
-    public void FalseIfSignWrittenAndWritingSign(){
+    public void IfSignWrittenAndWritingSign() {
         MainActivity mv = new MainActivity();
-        assertFalse(mv.ifNoSignWrittenAndWritingSign(" + ",true));
+        assertFalse( mv.ifNoSignWrittenAndWritingSign( " + ", true ) );
+        assertTrue( mv.ifSignWrittenAndWrittingSign( " + ", true ) ); //OK
+        assertFalse(mv.ifNoSignWrittenAndWrittingNoSign( " + ", true ) );
+        assertTrue(mv.ifSignWrittenAndWrittingNoSign( " + ", true)); //OK, number >> sign >> number
     }
 
     @Test
-    public void FalseIfSignWrittenAndNotWritingNoSign(){
+    public void IfSignWrittenAndNotWritingNoSign(){
         MainActivity mv = new MainActivity();
-        assertFalse(mv.ifNoSignWrittenAndWritingSign("1",true));
+        assertFalse( mv.ifNoSignWrittenAndWritingSign( "1", true ) );
+        assertFalse( mv.ifSignWrittenAndWrittingSign( "1", true ) );
+        assertFalse(mv.ifNoSignWrittenAndWrittingNoSign( "1", true ) );
+        assertTrue(mv.ifSignWrittenAndWrittingNoSign( "1", true)); // OK
     }
 
     @Test
-    public void TrueIfNoSignWrittenAndWritingSign(){
+    public void IfNoSignWrittenAndWritingSign(){
         MainActivity mv = new MainActivity();
-        assertTrue(mv.ifNoSignWrittenAndWritingSign(" + ",false));
+        assertTrue(mv.ifNoSignWrittenAndWritingSign( " + ", false ) ); //OK
+        assertFalse( mv.ifSignWrittenAndWrittingSign( " + ", false ) );
+        assertTrue(mv.ifNoSignWrittenAndWrittingNoSign( " + ", false ) ); //OK, writing sign >> number >> sign
+        assertFalse(mv.ifSignWrittenAndWrittingNoSign( " + ", false));
     }
 
     @Test
-    public void TrueIfNoSignWrittenAndWritingNoSign(){
+    public void IfNoSignWrittenAndWritingNoSign(){
         MainActivity mv = new MainActivity();
-        assertFalse(mv.ifNoSignWrittenAndWritingSign("1",false));
+        assertFalse(mv.ifNoSignWrittenAndWritingSign( "1", false ) );
+        assertFalse( mv.ifSignWrittenAndWrittingSign( "1", false ) );
+        assertTrue(mv.ifNoSignWrittenAndWrittingNoSign( "1", false ) ); //OK
+        assertFalse(mv.ifSignWrittenAndWrittingNoSign( "1", false));
     }
     //ifNoSignWrittenAndWritingSign
+    //ifSignWrittenAndWrittingSign
+
 
 
     //writeDot

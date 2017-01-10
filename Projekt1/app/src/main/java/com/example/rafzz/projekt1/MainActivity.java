@@ -2,6 +2,7 @@ package com.example.rafzz.projekt1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -15,7 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,25 +44,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView mLatitudeText;
     private TextView mLongitudeText;
 
-    public static boolean isActive = true;
-
     protected static GoogleApiClient mGoogleApiClient;
 
-    private Async task;
-
-    LocationRequest locationRequest;
+    private LocationRequest locationRequest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         //Maps--------------------------------------------------------------------------------------
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
         //Maps--------------------------------------------------------------------------------------
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -72,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //GPS-------------------------------------------------------------------------------------------
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-        //task = new Async(mLongitudeText,mLatitudeText,MainActivity.this,mMap);
-        //task.execute();
+
+
         //GPS-------------------------------------------------------------------------------------------
 
 
@@ -95,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Intent mapIntent = new Intent(this, MapsActivity.class);
         Bundle locationBundle = new Bundle();
 
-        locationBundle.putDouble("latitude",mLastLocation.getLatitude());
-        locationBundle.putDouble("longitude",mLastLocation.getLongitude());
+        locationBundle.putDouble("latitude", mLastLocation.getLatitude());
+        locationBundle.putDouble("longitude", mLastLocation.getLongitude());
         mapIntent.putExtras(locationBundle);
 
         startActivity(mapIntent);
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Camera.Parameters parameters;
 
     public void light(View v) {
+
         if (!v.isSelected()) {
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             c.setParameters(parameters);
@@ -129,11 +131,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mGoogleApiClient.connect();
     }
 
-    protected void onStop() {
-        //task.cancel(true);
 
-        super.onStop();
-    }
 
 
     //light sensor, gyroscope, compass--------------------------------------------------------------
@@ -154,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        // The light sensor returns a single value.
-        // Many sensors return 3 values, one for each axis.
 
         if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
 
@@ -167,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if (timestamp != 0) {
                 final float dT = (event.timestamp - timestamp) * NS2S;
-                // Axis of the rotation sample, not normalized yet.
                 float axisX = event.values[0];
                 float axisY = event.values[1];
                 float axisZ = event.values[2];
@@ -177,21 +172,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 yText.setText(String.valueOf(axisY));
                 zText.setText(String.valueOf(axisZ));
 
-                // Calculate the angular speed of the sample
                 float omegaMagnitude = (float) Math.sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);
 
-                // Normalize the rotation vector if it's big enough to get the axis
-                // (that is, EPSILON should represent your maximum allowable margin of error)
                 if (omegaMagnitude > EPSILON) {
                     axisX /= omegaMagnitude;
                     axisY /= omegaMagnitude;
                     axisZ /= omegaMagnitude;
                 }
 
-                // Integrate around this axis with the angular speed by the timestep
-                // in order to get a delta rotation from this sample over the timestep
-                // We will convert this axis-angle representation of the delta rotation
-                // into a quaternion before turning it into the rotation matrix.
                 float thetaOverTwo = omegaMagnitude * dT / 2.0f;
                 float sinThetaOverTwo = (float) Math.sin(thetaOverTwo);
                 float cosThetaOverTwo = (float) Math.cos(thetaOverTwo);
@@ -203,9 +191,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             timestamp = event.timestamp;
             float[] deltaRotationMatrix = new float[9];
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
-            // User code should concatenate the delta rotation we computed with the current rotation
-            // in order to get the updated rotation.
-            // rotationCurrent = rotationCurrent * deltaRotationMatrix;
 
         }
 
@@ -221,12 +206,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     protected void onResume() {
-        isActive = true;
+        mGoogleApiClient.connect();
         super.onResume();
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
-        // mGoogleApiClient.connect();
 
         if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             c = Camera.open();   //flashlight
@@ -238,9 +222,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        isActive = false;
         mSensorManager.unregisterListener(this);
         c.release();//flashlight
+        ToggleButton togle = (ToggleButton) findViewById(R.id.toggleButton);
+
+        togle.setChecked(false);
+        togle.setSelected(false);
     }
     //light sensor, gyroscope, compass--------------------------------------------------------------
 
@@ -254,14 +241,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return;
         }
         mMap.setMyLocationEnabled(true);
-
-
-
-        //task.set_mMap(mMap);
-
-
     }
-
 
 
     @Override
@@ -277,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     //Maps------------------------------------------------------------------------------------------
 
-    private Location mLastLocation;
-    //private Location mCurrentLocation;
+    private static Location mLastLocation;
+    //private Location mLastLocation;
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -300,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
 
     }
-
 
 
     @Override

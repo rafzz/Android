@@ -20,6 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
@@ -73,14 +76,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     LocationRequest locationRequest;
+
+    private List<LatLng> list = new ArrayList<LatLng>();
     @Override
     public void onLocationChanged(Location location) {
 
 
         //dotawac wszystkie punkty do listy i for each
+        list.add(new LatLng(location.getLatitude(),location.getLongitude()));
         mMap.addPolyline(new PolylineOptions()
-                .add(mLatLang, new LatLng(location.getLatitude(), location.getLongitude()))
+                .addAll(list)
                 .width(5).color(Color.BLUE).geodesic(true));
+
 
     }
 }

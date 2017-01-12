@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
  */
 
 
-public class WriteMethodValidation {
+public class WriteMethodTest {
 
     //ifNoSignWrittenAndWritingSign
     //ifSignWrittenAndWrittingSign
@@ -88,6 +88,17 @@ public class WriteMethodValidation {
     public void TrueIfEquationIsNotEmptyAndDotWasntWritten(){
         MainActivity mv = new MainActivity();
         assertTrue(mv.ifEquationIsNotEmptyAndDotWasntWritten(false,"12 1"));
+    }
+
+    //ifSecondMinusWasntWritten
+
+    @Test
+    public void ifSecondMinusWasntWritten(){
+        MainActivity mv = new MainActivity();
+        assertTrue(mv.ifSecondMinusWasntWritten(false," - ","2+2*2"));
+        assertFalse(mv.ifSecondMinusWasntWritten(true," - ","2+2*2"));
+        assertFalse(mv.ifSecondMinusWasntWritten(false," + ","2+2*2"));
+        assertFalse(mv.ifSecondMinusWasntWritten(false," - ","2"));
     }
 
 

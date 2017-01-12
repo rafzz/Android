@@ -33,12 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private boolean signFlag = false;  //true if sign was written
     private boolean dotflag = false;
 
+    private boolean secondSign = false;
+
+    private int signCount;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextSize(textSize);
+        signCount=0;
 
         Layout lay1 = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
         Appender app1 = new ConsoleAppender( lay1 );
@@ -95,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean ifEquationIsNotEmptyAndDotWasntWritten( boolean dotflag, String equation ){
         return ( equation.length() > 0 && dotflag == false && equation.charAt( equation.length() - 1 ) != ' ' );
     }
+
+    public boolean ifSecondMinusWasntWritten(boolean secondSign, String butText, String equation){
+        return secondSign==false &&
+                butText.equals( sign.SUBSTRACT.toSign()) &&
+                equation.length()>signLength;
+    }
     //WriteValidation
 
 
@@ -120,15 +132,24 @@ public class MainActivity extends AppCompatActivity {
 
         if ( ifNoSignWrittenAndWritingSign( butText, signFlag ) ) {
 
-            signFlag = true;
+            signFlag=true;
             dotflag = false;
+
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
 
         } else if ( ifSignWrittenAndWrittingSign( butText, signFlag ) ) {
 
-            equation += "";
-            textView.setText(textView.getText().toString() + "");
+            if(ifSecondMinusWasntWritten( secondSign, butText,  equation ) ) {
+
+                equation += sign.SUBSTRACT.toChar();
+                textView.setText( textView.getText().toString() + sign.SUBSTRACT.toMinus() );
+                secondSign=true;
+
+            }else{
+                equation += "";
+                textView.setText(textView.getText().toString() + "");
+            }
 
         } else if ( ifNoSignWrittenAndWrittingNoSign( butText, signFlag ) ) {
 
@@ -138,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         } else if ( ifSignWrittenAndWrittingNoSign( butText, signFlag ) ) {
 
             signFlag = false;
+            secondSign=false;
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
         }
@@ -151,9 +173,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean ifEquationEqualsSingleSign( String equation, boolean signFlag ){
+        //tab = equation.split(" ");
         return signFlag ||
-                equation.charAt( 1 ) == sign.ADD.toChar() ||
-                equation.charAt( 1 ) == sign.SUBSTRACT.toChar() ||
+                equation.charAt( 1 ) == sign.ADD.toChar() && equation.split(" ").length==signLength  ||
+                equation.charAt( 1 ) == sign.SUBSTRACT.toChar() && equation.split(" ").length==signLength  ||
                 equation.charAt( 1 ) == sign.MULTIPLY.toChar() ||
                 equation.charAt( 1 ) == sign.DIVIDE.toChar() ||
                 equation.charAt( 1 ) == sign.POW.toChar();
@@ -166,6 +189,15 @@ public class MainActivity extends AppCompatActivity {
                 !equation.contains( sign.POW.toString() ) &&
                 !equation.contains( sign.DIVIDE.toString() );
     }
+
+    public boolean ifSignOnTheBeginingOfEquation(String equation, boolean signFlag){
+        return equation.charAt(1)==sign.ADD.toChar() &&
+                signFlag==false &&
+                equation.length()>signLength ||
+                equation.charAt(1)==sign.SUBSTRACT.toChar() &&
+                signFlag==false &&
+                equation.length()>signLength;
+    }
     //ResultValidation
 
     public void result( View view ) {
@@ -176,20 +208,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (ifEquationEqualsSingleSign( equation, signFlag ) ) { return; }
 
-        if (ifEquationContainsNoSign( equation ) ) { return; }
-        /*
-        if (equation.length() > signLength && equation.charAt(1) == sign.ADD.toChar()) {
-            return;
-        } else if (equation.length() > signLength && equation.charAt(1) == sign.SUBSTRACT.toChar()) {
-            return;
-        } else if (equation.length() > signLength && equation.charAt(1) == sign.MULTIPLY.toChar()) {
-            return;
-        } else if (equation.length() > signLength && equation.charAt(1) == sign.DIVIDE.toChar()) {
-            return;
-        } else if (equation.length() > signLength && equation.charAt(1) == sign.POW.toChar()) {
-            return;
+        if(ifSignOnTheBeginingOfEquation( equation,  signFlag)){
+
+           equation =equation.substring(1,2)+equation.substring(3,equation.length());
+
         }
-        */
+
+        if (ifEquationContainsNoSign( equation ) ) { return; }
+
+
 
         String componentsTab[] = equation.split(" ");
         Stack stack = new Stack();
@@ -279,6 +306,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void cls( View view ) {
         dotflag = false;
+        signFlag=false;
+        secondSign=false;
         TextView textView = ( TextView ) findViewById( R.id.textView );
         textView.setText( null );
         equation = "";
@@ -300,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void ce( View view ) {
         TextView textView = ( TextView ) findViewById( R.id.textView );
+
 
         if ( ifEquationEmpty( equation ) ) {
             return;

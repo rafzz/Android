@@ -259,12 +259,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/button11"
         android:onClick="clsHistory"
-        android:layout_alignBaseline="@+id/button0"
-        android:layout_alignBottom="@+id/button0"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:backgroundTint="@color/blue"
-        android:layout_alignLeft="@+id/button10"
-        android:layout_alignStart="@+id/button10" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -82,4 +82,15 @@ public enum Sign {
         return null;
 
     }
+
+    public String toMinus(){
+
+        switch (this) {
+            case SUBSTRACT:
+                return " -";
+
+        }
+        return null;
+
+    }
 }

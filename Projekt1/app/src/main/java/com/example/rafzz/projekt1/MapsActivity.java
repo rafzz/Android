@@ -44,10 +44,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent mapIntent = getIntent();
         Bundle bun = mapIntent.getExtras();
-        LatLng ll = new LatLng(bun.getDouble("latitude"), bun.getDouble("longitude"));
-        mLatLang = ll;
+        LatLng latlng = new LatLng(bun.getDouble("latitude"), bun.getDouble("longitude"));
+        mLatLang = latlng;
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));
 
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(1000);

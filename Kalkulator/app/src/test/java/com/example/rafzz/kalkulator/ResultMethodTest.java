@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
  * Created by rafzz on 04.01.2017.
  */
 
-public class ResultMethodValidation {
+public class ResultMethodTest {
 
     @Test
     public void equationEmpty() {
@@ -34,7 +34,8 @@ public class ResultMethodValidation {
     public void equationIsSingleSign() {
         MainActivity mv = new MainActivity();
         assertTrue(mv.ifEquationEqualsSingleSign(" + ", true));
-        assertTrue(mv.ifEquationEqualsSingleSign(" + ", false));
+        assertTrue(mv.ifEquationEqualsSingleSign(" - ", true));
+        assertTrue(mv.ifEquationEqualsSingleSign(" * ", false));
         assertTrue(mv.ifEquationEqualsSingleSign(" 2 ", true));
     }
 
@@ -89,6 +90,19 @@ public class ResultMethodValidation {
         MainActivity mv = new MainActivity();
         assertFalse(mv.ifEquationLastIsSign("dfd"));
         assertTrue(mv.ifEquationLastIsSign("dfd * "));
+
+
+    }
+
+    //ifSignOnTheBeginingOfEquation
+    @Test
+    public void ifSignOnTheBeginingOfEquation() {
+        MainActivity mv = new MainActivity();
+        assertTrue(mv.ifSignOnTheBeginingOfEquation(" + 2",false));
+        assertTrue(mv.ifSignOnTheBeginingOfEquation(" - 2",false));
+        assertFalse(mv.ifSignOnTheBeginingOfEquation(" + 2",true));
+        assertFalse(mv.ifSignOnTheBeginingOfEquation(" ^ 2",false));
+
 
 
     }

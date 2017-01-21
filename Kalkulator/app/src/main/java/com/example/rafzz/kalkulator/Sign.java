@@ -93,4 +93,15 @@ public enum Sign {
         return null;
 
     }
+
+    public String toDotSpace(){
+
+        switch (this) {
+            case DOT:
+                return ". ";
+
+        }
+        return null;
+
+    }
 }

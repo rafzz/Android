@@ -242,16 +242,7 @@
         android:backgroundTint="@color/grey"
         android:id="@+id/buttonDot" />
 
-    <Button
-        android:text="CE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonHistory"
-        android:layout_alignLeft="@+id/buttonHistory"
-        android:layout_alignStart="@+id/buttonHistory"
-        android:backgroundTint="@color/blue"
-        android:onClick="ce"
-        android:id="@+id/button10" />
+
 
     <Button
         android:text="CLS\nH"

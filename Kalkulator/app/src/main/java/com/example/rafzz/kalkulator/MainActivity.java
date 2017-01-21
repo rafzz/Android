@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 equation += sign.SUBSTRACT.toChar();
                 textView.setText( textView.getText().toString() + sign.SUBSTRACT.toMinus() );
                 secondSign=true;
+                dotflag=true;
 
             }else{
                 equation += "";
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
             signFlag = false;
             secondSign=false;
+            dotflag=false;
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
         }
@@ -206,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (ifEquationEqualsEmpty(equation) || textView.length()==1 ) { return; }
 
+        if(!equation.contains(" ") && equation.charAt(0)==sign.SUBSTRACT.toChar()){ return; }
+
         if (ifEquationEqualsSingleSign( equation, signFlag ) ) { return; }
 
         if(ifSignOnTheBeginingOfEquation( equation,  signFlag)){
@@ -215,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (ifEquationContainsNoSign( equation ) ) { return; }
+
+        if(equation.contains(sign.DOT.toDotSpace())){ return; }
 
 
 

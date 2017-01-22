@@ -10,10 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -22,60 +19,63 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static final int DODAJ_ACTIVITY_REQUEST_CODE = 1;
-    protected static final String EXTRA_MESSAGE = "";
-    //protected static final String nr = "";
 
-    protected static  boolean ifedit = false;
+    protected static boolean ifedit = false;
 
     private LinqBaza zb = new LinqBaza(this);
 
-    static String summaryReport="";
+    static String summaryReport = "";
 
 
-    private ArrayList<TextView> listTV = new ArrayList<TextView>(){};
-    private ArrayList<Button> listB = new ArrayList<Button>(){};
+    private ArrayList<TextView> listTV = new ArrayList<TextView>() {
+    };
 
+    private final String editSummary = "\nEDIT: ";
+    private final String removeSummary = "\nREMOVED ID: ";
+    private final String allRemoveSummary = "\nALL REMOVED";
+
+    private final static String defaultLanguage = "default"; //ENG
+    private final static String PLLanguage = "PL";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //zb.addData("sdfs",3,"sfds");
-
 
     }
 
-    public void openSummary(View v){
+    public void openSummary(View v) {
         Intent intentSum = new Intent(this, Summary.class);
-        //intentSum.putExtra("sum",summaryReport);
         startActivity(intentSum);
     }
 
-    static String language="default";
+    private static String language = defaultLanguage;
 
-    public void clickPL(View v){
-        //add = (Button) findViewById(R.id.buttonDodaj);
-        language="pl";
-        updateLocale();
-        //add.setText(R.string.add);
-
+    public static String getLanguage() {
+        return language;
     }
-    public void clickENG(View v){
-        //add = (Button) findViewById(R.id.buttonDodaj);
-        language="default";
-        updateLocale();
-        //add.setText(R.string.add);
 
+
+    public void clickPL(View v) {
+        language = PLLanguage;
+        updateLocale();
     }
+
+    public void clickENG(View v) {
+        language = defaultLanguage;
+        updateLocale();
+    }
+
     private Button add;
     private Button remove;
     private Button summary;
-    public void updateLocale(){
+
+    public void updateLocale() {
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
-        config.locale=locale;
+        config.locale = locale;
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
         add = (Button) findViewById(R.id.buttonDodaj);
         add.setText(R.string.add);
@@ -86,71 +86,55 @@ public class MainActivity extends AppCompatActivity {
         read();
     }
 
-
-
-
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         listTV.clear();
         read();
     }
 
-    public void read(){
+    private final int txtSize = 24;
 
+    public void read() {
         ViewGroup layout = (ViewGroup) findViewById(R.id.activity_main);
         cls();
 
         Cursor k = zb.writeAllData();
-        while(k.moveToNext()){
-            int nr=k.getInt(0);
-            String imie=k.getString(1);
-            int wiek=k.getInt(2);
-            String sciezka=k.getString(3);
+        while (k.moveToNext()) {
+            int nr = k.getInt(0);
+            String imie = k.getString(1);
+            int wiek = k.getInt(2);
+            String sciezka = k.getString(3);
             String data = k.getString(4);
-
-            TableRow tr1 = new TableRow(this);
-
-
-            TextView tt = new TextView(this);
-
-            tt.setTextSize(24);
-            tt.setText("\n"+imie+", "+wiek+", "+data);
-            tt.setId(nr);
-            String s = sciezka;
-            tt.setTag(s);
-            listTV.add(tt);
-            //layout.addView(tt);
+            TableRow tableRrow1 = new TableRow(this);
+            TextView textView = new TextView(this);
+            textView.setTextSize(txtSize);
+            textView.setText("\n" + imie + ", " + wiek + ", " + data);
+            textView.setId(nr);
+            textView.setTag(sciezka);
+            listTV.add(textView);
 
 
-            ImageView ii = new ImageView(this);
-            //layout.addView(ii);
-            ii.setId(nr);
+            ImageView imageView = new ImageView(this);
+            imageView.setId(nr);
 
-            
-            setPic(sciezka,ii);
-            //listIV.add(ii);
-
+            setPic(sciezka, imageView);
 
             Button bEdit = new Button(this);
             bEdit.setText(R.string.edit);
             bEdit.setId(nr);
 
-            //layout.addView(bEdit);
 
             Button bRemove = new Button(this);
             bRemove.setText(R.string.remove);
             bRemove.setId(nr);
-            //layout.addView(bRemove);
 
+            tableRrow1.addView(textView);
+            tableRrow1.addView(imageView);
+            tableRrow1.addView(bEdit);
+            tableRrow1.addView(bRemove);
 
-
-            tr1.addView(tt);
-            tr1.addView(ii);
-            tr1.addView(bEdit);
-            tr1.addView(bRemove);
-
-            layout.addView(tr1);
+            layout.addView(tableRrow1);
             layout.addView(new TextView(this));
 
             bEdit.setOnClickListener(listenerEdit);
@@ -160,20 +144,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setPic(String path, ImageView mImageView) {
+    private final int scale = Math.min(40, 30);
 
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+    public void setPic(String path, ImageView mImageView) {
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(40,30);
+        int scaleFactor = scale;
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -185,39 +166,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     View.OnClickListener listenerRemove = new View.OnClickListener() {
-
         public void onClick(View v) {
             remove(v);
-
-
         }
     };
 
     View.OnClickListener listenerEdit = new View.OnClickListener() {
-
         public void onClick(View v) {
             openEdit(v);
         }
     };
 
-    public void openEdit(View view){
+    public void openEdit(View view) {
 
         Intent intentEdit = new Intent(this, Add.class);
         Bundle extras = new Bundle();
 
-        String txt="";
-        String id="";
-        String sciezka="";
+        String txt = "";
+        String id = "";
+        String sciezka = "";
 
-        String txtid;
-        ifedit=true;
-        for(TextView t : listTV){
-            if(t.getId()==view.getId()){
-                txt=t.getText().toString();
-                id+=t.getId();
+        ifedit = true;
+        for (TextView t : listTV) {
+            if (t.getId() == view.getId()) {
+                txt = t.getText().toString();
+                id += t.getId();
 
-                if(t.getTag()!=null){
-                    sciezka=t.getTag().toString();
+                if (t.getTag() != null) {
+                    sciezka = t.getTag().toString();
                 }
 
                 break;
@@ -229,48 +205,45 @@ public class MainActivity extends AppCompatActivity {
         String wiek = txtSplit[1];
         String data = txtSplit[2];
 
-        extras.putString("imie",imie);
-        extras.putString("wiek",wiek);
-        extras.putString("id",id);
-        extras.putString("sciezka",sciezka);
-        extras.putString("data",data);
-        MainActivity.summaryReport+="\nEDIT: "+imie+" "+wiek;
+        extras.putString("imie", imie);
+        extras.putString("wiek", wiek);
+        extras.putString("id", id);
+        extras.putString("sciezka", sciezka);
+        extras.putString("data", data);
+        MainActivity.summaryReport += editSummary + imie + " " + wiek;
 
-        //txtid = txt+", "+id+", "+sciezka;
-
-
-        //intentEdit.putExtra(EXTRA_MESSAGE ,txtid);
         intentEdit.putExtras(extras);
         startActivity(intentEdit);
     }
 
-    public void remove(View v){
+
+    public void remove(View v) {
         zb.removeData(v.getId());
-        MainActivity.summaryReport+="\nREMOVED ID: "+v.getId();
+        MainActivity.summaryReport += removeSummary + v.getId();
         read();
     }
 
 
-    public void openAdd(View view){
+    public void openAdd(View view) {
         Intent intent = new Intent(this, Add.class);
         startActivityForResult(intent, DODAJ_ACTIVITY_REQUEST_CODE);
     }
 
-    public void clsDB(View view){
+    public void clsDB(View view) {
         cls();
         zb.removeAllData();
-        MainActivity.summaryReport+="\nALL REMOVED";
+        MainActivity.summaryReport += allRemoveSummary;
     }
 
 
-    public void cls(){
+    public void cls() {
 
         ViewGroup layout = (ViewGroup) findViewById(R.id.activity_main);
-        Button b1 = (Button) findViewById(R.id.buttonDodaj);
-        Button b2 = (Button) findViewById(R.id.buttonUsun);
+        Button button1 = (Button) findViewById(R.id.buttonDodaj);
+        Button button2 = (Button) findViewById(R.id.buttonUsun);
         layout.removeAllViews();
-        layout.addView(b2);
-        layout.addView(b1);
+        layout.addView(button2);
+        layout.addView(button1);
 
     }
 }

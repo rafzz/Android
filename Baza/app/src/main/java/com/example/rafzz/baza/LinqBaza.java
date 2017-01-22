@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by rafzz on 05.11.2016.
  */
 
-public class LinqBaza extends SQLiteOpenHelper{
+public class LinqBaza extends SQLiteOpenHelper {
 
     private static final String table_name = "osoby";
     private static final String pk_name = "nr";
@@ -30,12 +30,12 @@ public class LinqBaza extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(
-                "create table "+ table_name +"(" +
-                        pk_name+" integer primary key autoincrement," +
-                        name+" text," +
-                        age+" integer, "+
-                        path+" text, "+
-                        data_ur+" text);" +
+                "create table " + table_name + "(" +
+                        pk_name + " integer primary key autoincrement," +
+                        name + " text," +
+                        age + " integer, " +
+                        path + " text, " +
+                        data_ur + " text);" +
                         "");
     }
 
@@ -49,43 +49,42 @@ public class LinqBaza extends SQLiteOpenHelper{
     }
 
 
-
-    public void addData(String name,int age,String path, String data_ur){
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(this.name, name);
-        values.put(this.age,age);
-        values.put(this.path,path);
-        values.put(this.data_ur,data_ur);
-        db.insertOrThrow(table_name,null, values);
-    }
-
-    public Cursor writeAllData(){
-        String[] column={pk_name,name,age,path,data_ur};
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor =db.query(table_name,column,null,null,null,null,null);
-        return cursor;
-    }
-
-    public void removeAllData(){
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(table_name, null, null);
-    }
-
-    public void updateData(int id, String name, int age,String path, String data_ur){
+    public void addData(String name, int age, String path, String data_ur) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(this.name, name);
         values.put(this.age, age);
-        values.put(this.path,path);
-        values.put(this.data_ur,data_ur);
-        String[] args={""+id};
-        db.update(table_name, values,pk_name+"=?",args);
+        values.put(this.path, path);
+        values.put(this.data_ur, data_ur);
+        db.insertOrThrow(table_name, null, values);
     }
 
-    public void removeData(int id){
+    public Cursor writeAllData() {
+        String[] column = {pk_name, name, age, path, data_ur};
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(table_name, column, null, null, null, null, null);
+        return cursor;
+    }
+
+    public void removeAllData() {
         SQLiteDatabase db = getWritableDatabase();
-        String[] args={""+id};
-        db.delete(table_name, pk_name+"=?", args);
+        db.delete(table_name, null, null);
+    }
+
+    public void updateData(int id, String name, int age, String path, String data_ur) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(this.name, name);
+        values.put(this.age, age);
+        values.put(this.path, path);
+        values.put(this.data_ur, data_ur);
+        String[] args = {"" + id};
+        db.update(table_name, values, pk_name + "=?", args);
+    }
+
+    public void removeData(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] args = {"" + id};
+        db.delete(table_name, pk_name + "=?", args);
     }
 }

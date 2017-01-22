@@ -25,14 +25,13 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.example.rafzz.baza.MainActivity.ifedit;
-import static com.example.rafzz.baza.MainActivity.summaryReport;
 
 
 public class Add extends AppCompatActivity {
 
-    public static final String RESPONSE = "";
     private String globnr;
-    private boolean iffoto=false;
+    private boolean iffoto = false;
+    private final String addSummary = "\nADD: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +49,13 @@ public class Add extends AppCompatActivity {
     private TextView day;
     private TextView month;
     private TextView year;
-    public void updateLocale(){
-        Locale locale = new Locale(MainActivity.language);
+
+
+    public void updateLocale() {
+        Locale locale = new Locale(MainActivity.getLanguage());
         Locale.setDefault(locale);
         Configuration config = new Configuration();
-        config.locale=locale;
+        config.locale = locale;
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
         save = (Button) findViewById(R.id.buttonZapisz);
         save.setText(R.string.save);
@@ -73,21 +74,12 @@ public class Add extends AppCompatActivity {
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-        //mCurrentPhotoPath="";
-    }
-
-    @Override
-    public void  onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
-        ifedit=false;
-        //EditText imie = (EditText) findViewById(R.id.editTextImie);
-        //imie.setText("niszcze");
-        //mCurrentPhotoPath=null;
+        ifedit = false;
     }
 
-    public void save(View view){
+    public void save(View view) {
         EditText imie = (EditText) findViewById(R.id.editTextImie);
         EditText wiek = (EditText) findViewById(R.id.editTextWiek);
         ImageView zdjecie = (ImageView) findViewById(R.id.imageView);
@@ -95,43 +87,48 @@ public class Add extends AppCompatActivity {
         EditText mm = (EditText) findViewById(R.id.editTextMonth);
         EditText rrrr = (EditText) findViewById(R.id.editTextYear);
 
-        //String response = imie.getText()+", "+wiek.getText();
-
         LinqBaza zb = new LinqBaza(this);
 
-        if(ifedit){
-            ifedit=false;
+        if (ifedit) {
+            ifedit = false;
 
-            zb.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath,dd.getText().toString()+"/"+mm.getText().toString()+"/"+rrrr.getText().toString());
-            //Intent resultIntent = new Intent();
-            //resultIntent.putExtra(RESPONSE, response);
-            //setResult(RESULT_OK, resultIntent);
+            zb.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()), mCurrentPhotoPath, dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
 
+        } else {
 
-
-        }else{
-            zb.addData(imie.getText().toString(),Integer.parseInt(wiek.getText().toString()),mCurrentPhotoPath,dd.getText().toString()+"/"+mm.getText().toString()+"/"+rrrr.getText().toString());
-            //Intent resultIntent = new Intent();
-            //resultIntent.putExtra(RESPONSE, response);
-            //setResult(RESULT_OK, resultIntent);
-            MainActivity.summaryReport+="\nADD: "+imie.getText().toString()+" "+wiek.getText().toString();
+            if (wiek.getText().length() == 0 ||
+                    imie.getText().length() == 0 ||
+                    dd.getText().length() == 0 ||
+                    mm.getText().length() == 0 ||
+                    rrrr.getText().length() == 0) {
+                return;
+            }
+            zb.addData(imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),
+                    mCurrentPhotoPath,
+                    dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
+            MainActivity.summaryReport += addSummary + imie.getText().toString() + " " + wiek.getText().toString();
         }
 
-
         this.finish();
-        mCurrentPhotoPath=null;
 
     }
 
 
     @Override
-    public void onResume(){
+    public void finish() {
+        super.finish();
+        mCurrentPhotoPath = null;
+    }
+
+
+    @Override
+    public void onResume() {
         super.onResume();
 
-        if(mCurrentPhotoPath!=null) {
+        if (mCurrentPhotoPath != null) {
             setPic();
-            if(iffoto && ifedit){
-                iffoto=false;
+            if (iffoto && ifedit) {
+                iffoto = false;
                 return;
             }
         }
@@ -145,33 +142,24 @@ public class Add extends AppCompatActivity {
 
         Intent intentEdit = getIntent();
 
-        if(ifedit){
-            //String message = intentEdit.getStringExtra(MainActivity.EXTRA_MESSAGE);
-            Bundle extras =  intentEdit.getExtras();
-
-            //String messagesplit[] = message.split(", ");
-
-            //imie.setText(messagesplit[0]);
+        if (ifedit) {
+            Bundle extras = intentEdit.getExtras();
             imie.setText((String) extras.get("imie"));
-            //wiek.setText(messagesplit[1]);
             wiek.setText((String) extras.get("wiek"));
             String data = (String) extras.get("data");
             String dataSplit[] = data.split("/");
+
             dd.setText(dataSplit[0]);
             mm.setText(dataSplit[1]);
             rrrr.setText(dataSplit[2]);
 
-            try{
-                //mCurrentPhotoPath=messagesplit[3];
-                mCurrentPhotoPath=(String) extras.get("sciezka");
+            try {
+                mCurrentPhotoPath = (String) extras.get("sciezka");
                 setPic();
-            }catch(ArrayIndexOutOfBoundsException a){
+            } catch (ArrayIndexOutOfBoundsException a) {
 
             }
-
-
-            //globnr = messagesplit[2];
-            globnr=(String) extras.get("id");
+            globnr = (String) extras.get("id");
         }
     }
 
@@ -196,7 +184,7 @@ public class Add extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
 
     public void dispatchTakePictureIntent(View view) {
-        iffoto=true;
+        iffoto = true;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -214,39 +202,25 @@ public class Add extends AppCompatActivity {
                         "com.example.android.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                //ImageView iv = (ImageView) findViewById(R.id.imageView2);
-                //Bitmap imageBitmap = (Bitmap) photoFile;
-                //iv.setImageBitmap();
-                //Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-                //iv.setImageBitmap(bitmap);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
-
             }
         }
-
-
     }
 
 
     public void setPic() {
         ImageView mImageView = (ImageView) findViewById(R.id.imageView);
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
         //int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
-        //bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);

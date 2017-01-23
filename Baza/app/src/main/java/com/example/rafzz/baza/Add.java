@@ -1,5 +1,6 @@
 package com.example.rafzz.baza;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.rafzz.baza.MainActivity.ifedit;
+
 
 
 public class Add extends AppCompatActivity {
@@ -76,23 +77,14 @@ public class Add extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ifedit = false;
+        MainActivity.setEdit(false);
     }
 
-    public void save(View view) {
-        EditText imie = (EditText) findViewById(R.id.editTextImie);
-        EditText wiek = (EditText) findViewById(R.id.editTextWiek);
-        ImageView zdjecie = (ImageView) findViewById(R.id.imageView);
-        EditText dd = (EditText) findViewById(R.id.editTextDay);
-        EditText mm = (EditText) findViewById(R.id.editTextMonth);
-        EditText rrrr = (EditText) findViewById(R.id.editTextYear);
+    public void saveEdit() {
+        if (MainActivity.isEdit()) {
+            MainActivity.setEdit(false);
 
-        LinqBaza zb = new LinqBaza(this);
-
-        if (ifedit) {
-            ifedit = false;
-
-            zb.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()), mCurrentPhotoPath, dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
+            linqBaza.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()), mCurrentPhotoPath, dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
 
         } else {
 
@@ -103,11 +95,33 @@ public class Add extends AppCompatActivity {
                     rrrr.getText().length() == 0) {
                 return;
             }
-            zb.addData(imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),
+            linqBaza.addData(imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),
                     mCurrentPhotoPath,
                     dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
-            MainActivity.summaryReport += addSummary + imie.getText().toString() + " " + wiek.getText().toString();
+            MainActivity.setSummaryReport(MainActivity.getSummaryReport()
+                    + addSummary + imie.getText().toString() + " " + wiek.getText().toString());
         }
+    }
+
+    private EditText imie;
+    private EditText wiek;
+    private ImageView zdjecie;
+    private EditText dd;
+    private EditText mm;
+    private EditText rrrr;
+    private LinqBaza linqBaza;
+
+    public void save(View view) {
+        imie = (EditText) findViewById(R.id.editTextImie);
+        wiek = (EditText) findViewById(R.id.editTextWiek);
+        zdjecie = (ImageView) findViewById(R.id.imageView);
+        dd = (EditText) findViewById(R.id.editTextDay);
+        mm = (EditText) findViewById(R.id.editTextMonth);
+        rrrr = (EditText) findViewById(R.id.editTextYear);
+
+        linqBaza = new LinqBaza(this);
+
+        saveEdit();
 
         this.finish();
 
@@ -121,13 +135,15 @@ public class Add extends AppCompatActivity {
     }
 
 
+
+
     @Override
     public void onResume() {
         super.onResume();
 
         if (mCurrentPhotoPath != null) {
             setPic();
-            if (iffoto && ifedit) {
+            if (iffoto && MainActivity.isEdit()) {
                 iffoto = false;
                 return;
             }
@@ -135,14 +151,13 @@ public class Add extends AppCompatActivity {
 
         EditText imie = (EditText) findViewById(R.id.editTextImie);
         EditText wiek = (EditText) findViewById(R.id.editTextWiek);
-        ImageView zdjecie = (ImageView) findViewById(R.id.imageView);
         EditText dd = (EditText) findViewById(R.id.editTextDay);
         EditText mm = (EditText) findViewById(R.id.editTextMonth);
         EditText rrrr = (EditText) findViewById(R.id.editTextYear);
 
         Intent intentEdit = getIntent();
 
-        if (ifedit) {
+        if (MainActivity.isEdit()) {
             Bundle extras = intentEdit.getExtras();
             imie.setText((String) extras.get("imie"));
             wiek.setText((String) extras.get("wiek"));

@@ -20,15 +20,21 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final int DODAJ_ACTIVITY_REQUEST_CODE = 1;
 
-    protected static boolean ifedit = false;
+    private static boolean edit = false;
+    public static boolean isEdit() { return edit; }
+    public static void setEdit(boolean ifedit) { MainActivity.edit = ifedit; }
+
 
     private LinqBaza zb = new LinqBaza(this);
 
-    static String summaryReport = "";
+    public static String getSummaryReport() {return summaryReport; }
+
+    public static void setSummaryReport(String summaryReport) {MainActivity.summaryReport = summaryReport; }
+
+    private static String summaryReport = "";
 
 
-    private ArrayList<TextView> listTV = new ArrayList<TextView>() {
-    };
+    private ArrayList<TextView> listTV = new ArrayList<TextView>() {};
 
     private final String editSummary = "\nEDIT: ";
     private final String removeSummary = "\nREMOVED ID: ";
@@ -186,14 +192,15 @@ public class MainActivity extends AppCompatActivity {
         String id = "";
         String sciezka = "";
 
-        ifedit = true;
-        for (TextView t : listTV) {
-            if (t.getId() == view.getId()) {
-                txt = t.getText().toString();
-                id += t.getId();
+        edit = true;
 
-                if (t.getTag() != null) {
-                    sciezka = t.getTag().toString();
+        for (TextView textView : listTV) {
+            if (textView.getId() == view.getId()) {
+                txt = textView.getText().toString();
+                id += textView.getId();
+
+                if (textView.getTag() != null) {
+                    sciezka = textView.getTag().toString();
                 }
 
                 break;
@@ -210,16 +217,16 @@ public class MainActivity extends AppCompatActivity {
         extras.putString("id", id);
         extras.putString("sciezka", sciezka);
         extras.putString("data", data);
-        MainActivity.summaryReport += editSummary + imie + " " + wiek;
+        MainActivity.setSummaryReport(MainActivity.getSummaryReport() + editSummary + imie + " " + wiek);
 
         intentEdit.putExtras(extras);
         startActivity(intentEdit);
     }
 
 
-    public void remove(View v) {
-        zb.removeData(v.getId());
-        MainActivity.summaryReport += removeSummary + v.getId();
+    public void remove(View view) {
+        zb.removeData(view.getId());
+        MainActivity.setSummaryReport(MainActivity.getSummaryReport() + removeSummary + view.getId());
         read();
     }
 
@@ -232,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
     public void clsDB(View view) {
         cls();
         zb.removeAllData();
-        MainActivity.summaryReport += allRemoveSummary;
+        MainActivity.setSummaryReport(MainActivity.getSummaryReport() + allRemoveSummary);
     }
 
 

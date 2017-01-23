@@ -12,6 +12,7 @@ public class Summary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         TextView textView = (TextView) findViewById(R.id.summ);
-        textView.setText(MainActivity.summaryReport);
+        textView.setTextSize(23);
+        textView.setText(MainActivity.getSummaryReport());
     }
 }

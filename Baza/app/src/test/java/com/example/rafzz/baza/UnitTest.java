@@ -1,5 +1,10 @@
 package com.example.rafzz.baza;
 
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,8 +15,10 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class UnitTest {
+
+
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void saveTest() throws Exception {
+
     }
 }

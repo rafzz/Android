@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
+
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,17 +21,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.rafzz.baza.Add">
 
-    <TextView
-        android:text="Imię: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/LabelImie"
-        android:cursorVisible="false"
-        android:contextClickable="false"
-        android:clickable="false" />
+
+
 
     <EditText
         android:layout_width="wrap_content"
@@ -33,10 +32,33 @@
         android:ems="10"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/LabelImie"
+        android:hint="@string/name"
         android:id="@+id/editTextImie"
-        android:background="@color/grey"
-        android:layout_alignRight="@+id/editTextWiek"
-        android:layout_alignEnd="@+id/editTextWiek" />
+        android:background="@color/grey" />
+
+    <Button
+        android:text="Zrob Zdjecie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="dispatchTakePictureIntent"
+        android:id="@+id/photoButton"
+        android:layout_below="@+id/editTextWiek"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="185dp" />
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/datePicker"
+        android:layout_below="@+id/editTextWiek"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="23dp"
+        android:layout_toEndOf="@+id/dateLable"
+        android:layout_above="@+id/saveButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -44,116 +66,37 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/editTextWiek"
+        android:hint="@string/age"
         android:background="@color/grey"
-        android:layout_alignTop="@+id/labelWiek"
-        android:layout_toRightOf="@+id/labelWiek"
-        android:layout_alignRight="@+id/foto"
-        android:layout_alignEnd="@+id/foto" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editTextDay"
-        android:background="@color/grey"
-        android:layout_below="@+id/labelDay"
-        android:layout_alignRight="@+id/labelDay"
-        android:layout_alignEnd="@+id/labelDay" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editTextMonth"
-        android:background="@color/grey"
-        android:layout_below="@+id/labelMonth"
-        android:layout_alignLeft="@+id/labelMonth"
-        android:layout_alignStart="@+id/labelMonth"
-        android:layout_alignRight="@+id/labelMonth"
-        android:layout_alignEnd="@+id/labelMonth" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editTextYear"
-        android:background="@color/grey"
-        android:layout_below="@+id/labelYear"
-        android:layout_alignLeft="@+id/labelYear"
-        android:layout_alignStart="@+id/labelYear"
-        android:layout_alignRight="@+id/labelYear"
-        android:layout_alignEnd="@+id/labelYear" />
-
-    <Button
-        android:text="Zrob Zdjecie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="dispatchTakePictureIntent"
-        android:id="@+id/foto"
-        android:layout_below="@+id/editTextDay"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="RRRR:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/labelYear"
-        android:layout_alignBaseline="@+id/labelDay"
-        android:layout_alignBottom="@+id/labelDay"
-        android:layout_alignRight="@+id/editTextWiek"
-        android:layout_alignEnd="@+id/editTextWiek" />
-
-    <TextView
-        android:text="Wiek: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/labelWiek"
-        android:layout_below="@+id/editTextImie"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="12dp" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/editTextImie"
+        android:layout_toEndOf="@+id/editTextImie"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp" />
 
     <Button
         android:text="Zapisz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="save"
-        android:id="@+id/buttonZapisz"
-        android:layout_alignBaseline="@+id/foto"
-        android:layout_alignBottom="@+id/foto"
+        android:id="@+id/saveButton"
+        android:layout_above="@+id/imageView"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/photoButton"
+        android:layout_toEndOf="@+id/photoButton" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/alert_dark_frame"
         android:id="@+id/imageView"
-        android:layout_below="@+id/foto"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:text="DD:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/labelDay"
-        android:layout_below="@+id/editTextWiek"
+        android:layout_below="@+id/photoButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
-
-    <TextView
-        android:text="MM:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/labelMonth"
-        android:layout_alignBaseline="@+id/labelYear"
-        android:layout_alignBottom="@+id/labelYear"
-        android:layout_alignLeft="@+id/editTextWiek"
-        android:layout_alignStart="@+id/editTextWiek" />
+        android:scaleType="fitCenter" />
 
 </RelativeLayout>
+    </ScrollView>
+
+

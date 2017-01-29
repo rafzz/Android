@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by rafzz on 05.11.2016.
  */
 
-public class LinqBaza extends SQLiteOpenHelper {
+public class DataBase extends SQLiteOpenHelper {
 
     private static final String table_name = "osoby";
     private static final String pk_name = "nr";
@@ -22,7 +22,8 @@ public class LinqBaza extends SQLiteOpenHelper {
     private static final String path = "sciezka";
     private static final String data_ur = "data_ur";
 
-    public LinqBaza(Context context) {
+
+    public DataBase(Context context) {
         super(context, db_name, null, 5);
     }
 

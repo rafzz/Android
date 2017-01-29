@@ -1,7 +1,7 @@
 package com.example.rafzz.baza;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,9 +31,28 @@ import java.util.Locale;
 
 public class Add extends AppCompatActivity {
 
-    private String globnr;
-    private boolean iffoto = false;
-    private final String addSummary = "\nADD: ";
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private final String NAME_MESAGE="name";
+    private final String AGE_MESAGE="age";
+    private final String DATE_MESAGE="date";
+    private final String PATH_MESAGE="path";
+    private final String ID_MESAGE="id";
+    private final String MESAGE_SPLIT="/";
+
+    private String editId;
+    private boolean ifPhoto = false;
+
+
+    private static String mCurrentPhotoPath;
+
+    private Button save;
+    private Button takePhoto;
+
+    private EditText name;
+    private EditText age;
+    private DatePicker date;
+    private DataBase dataBase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,38 +60,14 @@ public class Add extends AppCompatActivity {
         setContentView(R.layout.activity_add);
         updateLocale();
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
     }
 
-    private Button save;
-    private Button photo;
-    private TextView name;
-    private TextView age;
-    private TextView day;
-    private TextView month;
-    private TextView year;
+    @Override
+    public void onStop() {
+        super.onStop();
 
-
-    public void updateLocale() {
-        Locale locale = new Locale(MainActivity.getLanguage());
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-        save = (Button) findViewById(R.id.buttonZapisz);
-        save.setText(R.string.save);
-        photo = (Button) findViewById(R.id.foto);
-        photo.setText(R.string.photo);
-        name = (TextView) findViewById(R.id.LabelImie);
-        name.setText(R.string.name);
-        age = (TextView) findViewById(R.id.labelWiek);
-        age.setText(R.string.age);
-        day = (TextView) findViewById(R.id.labelDay);
-        day.setText(R.string.day);
-        month = (TextView) findViewById(R.id.labelMonth);
-        month.setText(R.string.month);
-        year = (TextView) findViewById(R.id.labelYear);
-        year.setText(R.string.year);
     }
 
     @Override
@@ -80,53 +76,57 @@ public class Add extends AppCompatActivity {
         MainActivity.setEdit(false);
     }
 
-    public void saveEdit() {
-        if (MainActivity.isEdit()) {
-            MainActivity.setEdit(false);
+    public void updateLocale() {
+        Locale locale = new Locale(MainActivity.getLanguage());
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
-            linqBaza.updateData(Integer.parseInt(globnr), imie.getText().toString(), Integer.parseInt(wiek.getText().toString()), mCurrentPhotoPath, dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
+        save = (Button) findViewById(R.id.saveButton);
+        save.setText(R.string.save);
 
-        } else {
-
-            if (wiek.getText().length() == 0 ||
-                    imie.getText().length() == 0 ||
-                    dd.getText().length() == 0 ||
-                    mm.getText().length() == 0 ||
-                    rrrr.getText().length() == 0) {
-                return;
-            }
-            linqBaza.addData(imie.getText().toString(), Integer.parseInt(wiek.getText().toString()),
-                    mCurrentPhotoPath,
-                    dd.getText().toString() + "/" + mm.getText().toString() + "/" + rrrr.getText().toString());
-            MainActivity.setSummaryReport(MainActivity.getSummaryReport()
-                    + addSummary + imie.getText().toString() + " " + wiek.getText().toString());
-        }
+        takePhoto = (Button) findViewById(R.id.photoButton);
+        takePhoto.setText(R.string.photo);
     }
 
-    private EditText imie;
-    private EditText wiek;
-    private ImageView zdjecie;
-    private EditText dd;
-    private EditText mm;
-    private EditText rrrr;
-    private LinqBaza linqBaza;
+    public boolean nameOrAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
 
     public void save(View view) {
-        imie = (EditText) findViewById(R.id.editTextImie);
-        wiek = (EditText) findViewById(R.id.editTextWiek);
-        zdjecie = (ImageView) findViewById(R.id.imageView);
-        dd = (EditText) findViewById(R.id.editTextDay);
-        mm = (EditText) findViewById(R.id.editTextMonth);
-        rrrr = (EditText) findViewById(R.id.editTextYear);
+        name = (EditText) findViewById(R.id.editTextImie);
+        age = (EditText) findViewById(R.id.editTextWiek);
+        date = (DatePicker) findViewById(R.id.datePicker);
+        dataBase = new DataBase(this);
 
-        linqBaza = new LinqBaza(this);
 
-        saveEdit();
+        if (MainActivity.isEdit()) {
 
+            MainActivity.setEdit(false);
+
+            dataBase.updateData(Integer.parseInt(editId),
+                    name.getText().toString(), Integer.parseInt(age.getText().toString()),
+                    mCurrentPhotoPath,
+                    String.valueOf(date.getDayOfMonth()) + "/" +
+                            String.valueOf(date.getMonth()) + "/" +
+                            String.valueOf(date.getYear()));
+
+        } else if( nameOrAgeIsNotEmpty() ){
+
+            dataBase.addData(name.getText().toString(), Integer.parseInt(age.getText().toString()),
+                    mCurrentPhotoPath,
+                    String.valueOf(date.getDayOfMonth()) + "/" +
+                            String.valueOf(date.getMonth()) + "/" +
+                            String.valueOf(date.getYear()));
+
+            MainActivity.setSummaryReport(MainActivity.getSummaryReport() +
+                    this.getResources().getString(R.string.addSummary) +
+                    name.getText().toString() + " " +
+                    age.getText().toString());
+        }else{
+            return;
+        }
         this.finish();
-
     }
-
 
     @Override
     public void finish() {
@@ -134,6 +134,41 @@ public class Add extends AppCompatActivity {
         mCurrentPhotoPath = null;
     }
 
+    public boolean IfEditDisplayPhoto(){
+        if (mCurrentPhotoPath != null) {
+            setPic();
+            if (ifPhoto && MainActivity.isEdit()) {
+                ifPhoto = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void ifEditDisplayAllData(){
+
+        Intent intentEdit = getIntent();
+
+        if (MainActivity.isEdit()) {
+            Bundle extras = intentEdit.getExtras();
+
+            name.setText((String) extras.get(NAME_MESAGE));
+            age.setText((String) extras.get(AGE_MESAGE));
+            String data = (String) extras.get(DATE_MESAGE);
+            String dataSplit[] = data.split(MESAGE_SPLIT);
+
+            date.updateDate(Integer.parseInt(dataSplit[2]),Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[0]));
+
+            try {
+                mCurrentPhotoPath = (String) extras.get(PATH_MESAGE);
+                setPic();
+            }
+            catch (ArrayIndexOutOfBoundsException a) {}
+
+            editId = (String) extras.get(ID_MESAGE);
+        }
+
+    }
 
 
 
@@ -141,66 +176,43 @@ public class Add extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        if (mCurrentPhotoPath != null) {
-            setPic();
-            if (iffoto && MainActivity.isEdit()) {
-                iffoto = false;
-                return;
-            }
-        }
 
-        EditText imie = (EditText) findViewById(R.id.editTextImie);
-        EditText wiek = (EditText) findViewById(R.id.editTextWiek);
-        EditText dd = (EditText) findViewById(R.id.editTextDay);
-        EditText mm = (EditText) findViewById(R.id.editTextMonth);
-        EditText rrrr = (EditText) findViewById(R.id.editTextYear);
 
-        Intent intentEdit = getIntent();
+        if( IfEditDisplayPhoto() ){ return; };
 
-        if (MainActivity.isEdit()) {
-            Bundle extras = intentEdit.getExtras();
-            imie.setText((String) extras.get("imie"));
-            wiek.setText((String) extras.get("wiek"));
-            String data = (String) extras.get("data");
-            String dataSplit[] = data.split("/");
+        name = (EditText) findViewById(R.id.editTextImie);
+        age = (EditText) findViewById(R.id.editTextWiek);
+        date = (DatePicker) findViewById(R.id.datePicker);
 
-            dd.setText(dataSplit[0]);
-            mm.setText(dataSplit[1]);
-            rrrr.setText(dataSplit[2]);
+        ifEditDisplayAllData();
 
-            try {
-                mCurrentPhotoPath = (String) extras.get("sciezka");
-                setPic();
-            } catch (ArrayIndexOutOfBoundsException a) {
-
-            }
-            globnr = (String) extras.get("id");
-        }
     }
 
-    private static String mCurrentPhotoPath;
+    private final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+    private final String FILE_NAME_FORMAT = "JPEG_";
+    private final String FILE_FORMAT = ".jpg";
 
     public File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        String imageFileName = FILE_NAME_FORMAT + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                FILE_FORMAT,         /* suffix */
                 storageDir      /* directory */
         );
-
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    static final int REQUEST_TAKE_PHOTO = 1;
+    private final String AUTHORITY = "com.example.android.fileprovider";
 
     public void dispatchTakePictureIntent(View view) {
-        iffoto = true;
+        ifPhoto = true;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
@@ -214,14 +226,16 @@ public class Add extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
+                        AUTHORITY,
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
             }
         }
     }
 
+    private final int PHOTO_SCALE = 10;
 
     public void setPic() {
         ImageView mImageView = (ImageView) findViewById(R.id.imageView);
@@ -236,6 +250,7 @@ public class Add extends AppCompatActivity {
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = PHOTO_SCALE;
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);

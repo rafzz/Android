@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,7 +61,7 @@ public class Add extends AppCompatActivity {
         setContentView(R.layout.activity_add);
         updateLocale();
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
     }
 
@@ -73,7 +74,7 @@ public class Add extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MainActivity.setEdit(false);
+        //MainActivity.setEdit(false);
     }
 
     public void updateLocale() {
@@ -92,10 +93,11 @@ public class Add extends AppCompatActivity {
 
     public boolean nameOrAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
 
+    private CalendarView datee;
     public void save(View view) {
         name = (EditText) findViewById(R.id.editTextImie);
         age = (EditText) findViewById(R.id.editTextWiek);
-        date = (DatePicker) findViewById(R.id.datePicker);
+        date = (CustomDatePicker) findViewById(R.id.datePicker);
         dataBase = new DataBase(this);
 
 
@@ -132,6 +134,7 @@ public class Add extends AppCompatActivity {
     public void finish() {
         super.finish();
         mCurrentPhotoPath = null;
+        MainActivity.setEdit(false);
     }
 
     public boolean IfEditDisplayPhoto(){

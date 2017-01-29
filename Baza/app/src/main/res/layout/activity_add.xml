@@ -47,19 +47,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="185dp" />
 
-    <DatePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/datePicker"
-        android:layout_below="@+id/editTextWiek"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="23dp"
-        android:layout_toEndOf="@+id/dateLable"
-        android:layout_above="@+id/saveButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,6 +82,19 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:scaleType="fitCenter" />
+
+    <view android:id="@+id/datePicker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        class="com.example.rafzz.baza.CustomDatePicker"
+
+
+        android:layout_below="@+id/editTextImie"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_above="@+id/saveButton">
+    </view>
 
 </RelativeLayout>
     </ScrollView>

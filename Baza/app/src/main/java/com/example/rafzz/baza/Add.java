@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -55,26 +56,38 @@ public class Add extends AppCompatActivity {
     private DataBase dataBase;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         updateLocale();
 
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
 
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void rememberInsertedData(){
+        if(MainActivity.isEdit()) {
 
+            Bundle extras = new Bundle();
+
+            extras.putString(NAME_MESAGE, name.getText().toString());
+            extras.putString(AGE_MESAGE, age.getText().toString());
+            extras.putString(PATH_MESAGE, mCurrentPhotoPath);
+            extras.putString(DATE_MESAGE, String.valueOf(date.getDayOfMonth()) + "/" +
+                    String.valueOf(date.getMonth()) + "/" +
+                    String.valueOf(date.getYear()));
+            intentEdit.putExtras(extras);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //MainActivity.setEdit(false);
+        rememberInsertedData(); //on orientation change
+
     }
 
     public void updateLocale() {
@@ -91,9 +104,8 @@ public class Add extends AppCompatActivity {
         takePhoto.setText(R.string.photo);
     }
 
-    public boolean nameOrAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
+    public boolean nameAndAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
 
-    private CalendarView datee;
     public void save(View view) {
         name = (EditText) findViewById(R.id.editTextImie);
         age = (EditText) findViewById(R.id.editTextWiek);
@@ -112,7 +124,7 @@ public class Add extends AppCompatActivity {
                             String.valueOf(date.getMonth()) + "/" +
                             String.valueOf(date.getYear()));
 
-        } else if( nameOrAgeIsNotEmpty() ){
+        } else if( nameAndAgeIsNotEmpty() ){
 
             dataBase.addData(name.getText().toString(), Integer.parseInt(age.getText().toString()),
                     mCurrentPhotoPath,
@@ -148,9 +160,11 @@ public class Add extends AppCompatActivity {
         return false;
     }
 
+    private static Intent intentEdit;
+
     public void ifEditDisplayAllData(){
 
-        Intent intentEdit = getIntent();
+        intentEdit = getIntent();
 
         if (MainActivity.isEdit()) {
             Bundle extras = intentEdit.getExtras();

@@ -11,7 +11,7 @@
     <string name="age">age</string>
     <string name="save">SAVE</string>
     <string name="photo">TAKE PHOTO</string>
-    <string name="addSummary">\nADD: </string>
+    <string name="addSummary">\nADDED: </string>
 
     <string name="editSummary">\nEDITED: </string>
     <string name="removeSummary">\nREMOVED ID: </string>

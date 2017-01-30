@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private final static String defaultLanguage = "default"; //ENG
     private final static String PLLanguage = "PL";
 
-    private static String language = defaultLanguage;
+    private static String language = PLLanguage;
 
     public static String getLanguage() {
         return language;
@@ -193,6 +193,12 @@ public class MainActivity extends AppCompatActivity {
         sendDataToEdit( nameAgeDate,  id,  path);
     }
 
+    private final String NAME_MESAGE="name";
+    private final String AGE_MESAGE="age";
+    private final String DATE_MESAGE="date";
+    private final String PATH_MESAGE="path";
+    private final String ID_MESAGE="id";
+
     public void sendDataToEdit(String nameAgeDate, String id, String path){
         Intent intentEdit = new Intent(this, Add.class);
         Bundle extras = new Bundle();
@@ -202,11 +208,11 @@ public class MainActivity extends AppCompatActivity {
         String age = txtSplit[1];
         String date = txtSplit[2];
 
-        extras.putString("name", name);
-        extras.putString("age", age);
-        extras.putString("id", id);
-        extras.putString("path", path);
-        extras.putString("date", date);
+        extras.putString(NAME_MESAGE, name);
+        extras.putString(AGE_MESAGE, age);
+        extras.putString(ID_MESAGE, id);
+        extras.putString(PATH_MESAGE, path);
+        extras.putString(DATE_MESAGE, date);
 
         intentEdit.putExtras(extras);
         startActivity(intentEdit);

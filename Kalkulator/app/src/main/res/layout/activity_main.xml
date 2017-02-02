@@ -37,7 +37,7 @@
         android:background="@color/grey"/>
 
     <Button
-        android:text="5"
+        android:text="@string/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button5"
@@ -49,7 +49,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="6"
+        android:text="@string/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/button5"
@@ -60,7 +60,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="8"
+        android:text="@string/button8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/button7"
@@ -71,7 +71,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="9"
+        android:text="@string/button9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/button8"
@@ -82,7 +82,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="="
+        android:text="@string/buttonEqual"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button0"
@@ -94,7 +94,7 @@
 
 
     <Button
-        android:text="4"
+        android:text="@string/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button4"
@@ -105,7 +105,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="7"
+        android:text="@string/button7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button7"
@@ -116,7 +116,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="0"
+        android:text="@string/button0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button0"
@@ -127,7 +127,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text=" + "
+        android:text="@string/buttonAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonAdd"
@@ -138,7 +138,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text=" - "
+        android:text="@string/buttonSubstract"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/buttonAdd"
@@ -149,7 +149,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="3"
+        android:text="@string/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button3"
@@ -162,7 +162,7 @@
 
 
     <Button
-        android:text="2"
+        android:text="@string/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button2"
@@ -174,7 +174,7 @@
         android:backgroundTint="@color/grey"/>
 
     <Button
-        android:text="1"
+        android:text="@string/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
@@ -186,7 +186,7 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text=" * "
+        android:text="@string/buttonMultiply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonResult"
@@ -197,7 +197,7 @@
         android:onClick="write"/>
 
     <Button
-        android:text=" / "
+        android:text="@string/buttonDivide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonDiv"
@@ -208,7 +208,7 @@
         android:onClick="write"/>
 
     <Button
-        android:text="H"
+        android:text="@string/buttonHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonHistory"
@@ -219,7 +219,7 @@
         android:onClick="openHistory"/>
 
     <Button
-        android:text=" ^ "
+        android:text="@string/buttonPow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonAdd"
@@ -230,7 +230,7 @@
         android:id="@+id/buttonPow" />
 
     <Button
-        android:text="C"
+        android:text="@string/buttonCLS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button12"
@@ -244,7 +244,7 @@
         android:layout_marginStart="19dp" />
 
     <Button
-        android:text="."
+        android:text="@string/buttonDot"
         android:onClick="write"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
 
 
     <Button
-        android:text="CLS\nH"
+        android:text="@string/buttonClsHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button11"

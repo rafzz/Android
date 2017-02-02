@@ -3,5 +3,31 @@
     <color name="grey">#C0C0C0</color>
     <color name="blue">#284c72</color>
     <color name="bg">#808080</color>
+    <string name="button0">0</string>
+    <string name="button1">1</string>
+    <string name="button2">2</string>
+    <string name="button3">3</string>
+    <string name="button4">4</string>
+    <string name="button5">5</string>
+    <string name="button6">6</string>
+    <string name="button7">7</string>
+    <string name="button8">8</string>
+    <string name="button9">9</string>
+    <string name="buttonClsHistory">CLS\nH</string>
+    <string name="buttonCLS">C</string>
+    <string name="buttonHistory">H</string>
+    <string name="buttonDot">.</string>
+    <string name="buttonAdd">\u0020+\u0020</string>
+    <string name="buttonSubstract">\u0020-\u0020</string>
+    <string name="buttonPow">\u0020^\u0020</string>
+    <string name="buttonDivide">\u0020/\u0020</string>
+    <string name="buttonMultiply">\u0020*\u0020</string>
+    <string name="buttonEqual">=</string>
 
+
+
+
+
+
+    <string name="buttonBack">Back</string>
 </resources>

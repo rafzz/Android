@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private TextView tv;
+    private TextView textView;
+    private final int TEXT_SIZE = 20;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -16,10 +17,10 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView( R.layout.activity_history );
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra( MainActivity.EXTRA_MESSAGE );
-        tv = ( TextView ) findViewById( R.id.textView4 );
-        tv.setTextSize( 20 );
-        tv.setText( message );
+        String message = intent.getStringExtra( MainActivity.getExtraMessage() );
+        textView = ( TextView ) findViewById( R.id.textView );
+        textView.setTextSize( TEXT_SIZE );
+        textView.setText( message );
     }
 
 

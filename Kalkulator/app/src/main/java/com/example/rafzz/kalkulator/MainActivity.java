@@ -12,8 +12,6 @@ import android.widget.TextView;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.*;
 
-
-import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Stack;
@@ -21,30 +19,32 @@ import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected static final String EXTRA_MESSAGE = "com.example.rafzz.kalkulator";
-    private final int signLength = 3;
-    private final int textSize = 35;
-    private final int weight4 = 4;
-    private final int weight2 = 2;
-    private final int weight3 = 3;
-    protected String hist = "";
+    public static String getExtraMessage() {
+        return EXTRA_MESSAGE;
+    }
+
+    private static final String EXTRA_MESSAGE = "com.example.rafzz.kalkulator";
+    private final int SIGN_LENGTH = 3;
+    private final int TEXT_SIZE = 35;
+    private final int WEIGHT4 = 4;
+    private final int WEIGHT2 = 2;
+    private final int WEIGHT3 = 3;
+
+    protected String history = "";
     private String equation = "";
+
     private Sign sign;
+
     private boolean signFlag = false;  //true if sign was written
     private boolean dotflag = false;
-
-    private boolean secondSign = false;
-
-    private int signCount;
-
+    private boolean secondSignFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setTextSize(textSize);
-        signCount=0;
+        textView.setTextSize(TEXT_SIZE);
 
         Layout lay1 = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
         Appender app1 = new ConsoleAppender( lay1 );
@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         Logger logger = Logger.getRootLogger();
         logger.debug( "LOG" );
     }
-
 
     //WirteValidation
     public boolean ifNoSignWrittenAndWritingSign(String butText, boolean signFlag){
@@ -105,15 +104,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean ifSecondMinusWasntWritten(boolean secondSign, String butText, String equation){
         return secondSign==false &&
                 butText.equals( sign.SUBSTRACT.toSign()) &&
-                equation.length()>signLength;
+                equation.length()> SIGN_LENGTH;
     }
     //WriteValidation
 
+    private TextView textView;
+    private Button button;
 
     public void write( View view ) {
 
-        TextView textView = ( TextView ) findViewById( R.id.textView );
-        Button button = ( Button ) view;
+        textView = ( TextView ) findViewById( R.id.textView );
+        button = ( Button ) view;
         String butText = button.getText().toString();
 
 
@@ -140,11 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
         } else if ( ifSignWrittenAndWrittingSign( butText, signFlag ) ) {
 
-            if(ifSecondMinusWasntWritten( secondSign, butText,  equation ) ) {
+            if(ifSecondMinusWasntWritten(secondSignFlag, butText,  equation ) ) {
 
                 equation += sign.SUBSTRACT.toChar();
                 textView.setText( textView.getText().toString() + sign.SUBSTRACT.toMinus() );
-                secondSign=true;
+                secondSignFlag =true;
                 dotflag=true;
 
             }else{
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         } else if ( ifSignWrittenAndWrittingNoSign( butText, signFlag ) ) {
 
             signFlag = false;
-            secondSign=false;
+            secondSignFlag =false;
             dotflag=false;
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
@@ -175,10 +176,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean ifEquationEqualsSingleSign( String equation, boolean signFlag ){
-        //tab = equation.split(" ");
         return signFlag ||
-                equation.charAt( 1 ) == sign.ADD.toChar() && equation.split(" ").length==signLength  ||
-                equation.charAt( 1 ) == sign.SUBSTRACT.toChar() && equation.split(" ").length==signLength  ||
+                equation.charAt( 1 ) == sign.ADD.toChar() && equation.split(" ").length== SIGN_LENGTH ||
+                equation.charAt( 1 ) == sign.SUBSTRACT.toChar() && equation.split(" ").length== SIGN_LENGTH ||
                 equation.charAt( 1 ) == sign.MULTIPLY.toChar() ||
                 equation.charAt( 1 ) == sign.DIVIDE.toChar() ||
                 equation.charAt( 1 ) == sign.POW.toChar();
@@ -195,16 +195,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean ifSignOnTheBeginingOfEquation(String equation, boolean signFlag){
         return equation.charAt(1)==sign.ADD.toChar() &&
                 signFlag==false &&
-                equation.length()>signLength ||
+                equation.length()> SIGN_LENGTH ||
                 equation.charAt(1)==sign.SUBSTRACT.toChar() &&
                 signFlag==false &&
-                equation.length()>signLength;
+                equation.length()> SIGN_LENGTH;
     }
     //ResultValidation
 
     public void result( View view ) {
 
-        TextView textView = ( TextView ) findViewById( R.id.textView );
+        textView = ( TextView ) findViewById( R.id.textView );
 
         if (ifEquationEqualsEmpty(equation) || textView.length()==1 ) { return; }
 
@@ -223,74 +223,73 @@ public class MainActivity extends AppCompatActivity {
         if(equation.contains(sign.DOT.toDotSpace())){ return; }
 
 
-
         String componentsTab[] = equation.split(" ");
-        Stack stack = new Stack();
+        Stack stackForFacorsAndSigns = new Stack();
         Dictionary signDict = new Hashtable(); //contains weights of signs
 
-        signDict.put( sign.POW.toString(), weight4 );
-        signDict.put( sign.MULTIPLY.toString(), weight3 );
-        signDict.put( sign.DIVIDE.toString(), weight3 );
-        signDict.put( sign.ADD.toString(), weight2 );
-        signDict.put( sign.SUBSTRACT.toString(), weight2 );
+        signDict.put( sign.POW.toString(), WEIGHT4);
+        signDict.put( sign.MULTIPLY.toString(), WEIGHT3);
+        signDict.put( sign.DIVIDE.toString(), WEIGHT3);
+        signDict.put( sign.ADD.toString(), WEIGHT2);
+        signDict.put( sign.SUBSTRACT.toString(), WEIGHT2);
         String output = ""; // constins equation formated to RPN
 
         for ( String component : componentsTab ) { //component >> single number or sign
 
-            if ( stack.size() == 0 ) {
+            if ( stackForFacorsAndSigns.size() == 0 ) {
                 try {
                     output += Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
-                    stack.push( component );
+                    stackForFacorsAndSigns.push( component );
                 }
             } else {
                 try {
                     output += " " + Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
-                    while ( !stack.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stack.peek() ) ) {
-                        output += " " + stack.pop();
+                    while ( !stackForFacorsAndSigns.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stackForFacorsAndSigns.peek() ) ) {
+                        output += " " + stackForFacorsAndSigns.pop();
                     }
-                    stack.push( component );
+                    stackForFacorsAndSigns.push( component );
 
-                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stack.peek() ) ) {
-                        stack.push( component );
+                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stackForFacorsAndSigns.peek() ) ) {
+                        stackForFacorsAndSigns.push( component );
                     }
                 }
             }
         }
-        for ( int i = 0; i <= stack.size(); i++ ) {
-            output += " " + stack.pop();
+        for ( int i = 0; i <= stackForFacorsAndSigns.size(); i++ ) {
+            output += " " + stackForFacorsAndSigns.pop();
         }
-        stack = new Stack();
+        stackForFacorsAndSigns = new Stack();
 
         String outTab[] = output.split( " " );
 
         for ( String component : outTab ) {
 
             try {
-                stack.push( Double.parseDouble( component ) );
+                stackForFacorsAndSigns.push( Double.parseDouble( component ) );
             } catch ( NumberFormatException exception ) {
-                Double a = ( Double ) stack.pop(); // first component of equation
-                Double b = ( Double ) stack.pop(); // second component of equation
+                Double factorA = ( Double ) stackForFacorsAndSigns.pop(); // first component of equation
+                Double factorB = ( Double ) stackForFacorsAndSigns.pop(); // second component of equation
 
                 if ( component.equals( sign.ADD.toString() ) ) {
-                    stack.push( b + a );
+                    stackForFacorsAndSigns.push( factorB + factorA );
                 } else if ( component.equals( sign.SUBSTRACT.toString() ) ) {
-                    stack.push( b - a );
+                    stackForFacorsAndSigns.push( factorB - factorA );
                 } else if ( component.equals( sign.MULTIPLY.toString() ) ) {
-                    stack.push( b * a );
+                    stackForFacorsAndSigns.push( factorB * factorA );
                 } else if ( component.equals( sign.DIVIDE.toString() ) ) {
-                    stack.push( b / a );
+                    stackForFacorsAndSigns.push( factorB / factorA );
                 } else if ( component.equals( sign.POW.toString() ) ) {
-                    stack.push(Math.pow( b, a ) );
+                    stackForFacorsAndSigns.push(Math.pow( factorB, factorA ) );
                 }
             }
         }
-        hist += equation + sign.EQUAL.toString() + stack.peek().toString() + "\n";
+        history += equation + sign.EQUAL.toString() + stackForFacorsAndSigns.peek().toString() + "\n";
 
         equation = "";
 
-        textView.setText( stack.peek().toString() );
+        textView.setText( stackForFacorsAndSigns.peek().toString() );
 
         equation = textView.getText().toString();
         try {
@@ -305,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openHistory( View view ) {
         Intent intent = new Intent( this, HistoryActivity.class );
-        intent.putExtra( EXTRA_MESSAGE, hist );
+        intent.putExtra( EXTRA_MESSAGE, history);
         startActivity( intent );
 
     }
@@ -313,50 +312,14 @@ public class MainActivity extends AppCompatActivity {
     public void cls( View view ) {
         dotflag = false;
         signFlag=false;
-        secondSign=false;
+        secondSignFlag =false;
         TextView textView = ( TextView ) findViewById( R.id.textView );
         textView.setText( null );
         equation = "";
     }
 
-    //ce validation
-    public boolean ifEquationEmpty( String equation ){
-        return equation == null || equation.length() == 0;
-    }
-
-    public boolean ifEquationLastIsDot( String equation ){
-        return equation.charAt(equation.length() - 1) == sign.DOT.toChar();
-    }
-
-    public boolean ifEquationLastIsSign( String equation ) {
-        return equation.charAt(equation.length() - 1) == ' ';
-    }
-    //ce validation
-
-    public void ce( View view ) {
-        TextView textView = ( TextView ) findViewById( R.id.textView );
-
-
-        if ( ifEquationEmpty( equation ) ) {
-            return;
-        } else {
-            if ( ifEquationLastIsDot( equation ) ) {
-                dotflag = false;
-            }
-            if ( ifEquationLastIsSign( equation ) ) {
-
-                equation = equation.substring( 0, equation.length() - signLength );
-                textView.setText( equation );
-                return;
-            }
-            equation = equation.substring( 0, equation.length() - 1 );
-            textView.setText( equation );
-        }
-
-    }
-
     public void clsHistory( View view ) {
-        hist = "";
+        history = "";
     }
 
 }

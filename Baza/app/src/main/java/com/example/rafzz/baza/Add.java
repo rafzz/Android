@@ -1,12 +1,10 @@
 package com.example.rafzz.baza;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import android.net.MailTo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,11 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 import java.io.File;
@@ -27,9 +23,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-
-
 
 public class Add extends AppCompatActivity {
 
@@ -44,27 +37,24 @@ public class Add extends AppCompatActivity {
     private String editId;
     private boolean ifPhoto = false;
 
-
     private static String mCurrentPhotoPath;
+    private static Intent intentEdit;
 
     private Button save;
     private Button takePhoto;
 
     private EditText name;
     private EditText age;
+
     private DatePicker date;
     private DataBase dataBase;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
         updateLocale();
-
-
 
     }
 
@@ -86,6 +76,7 @@ public class Add extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         rememberInsertedData(); //on orientation change
 
     }
@@ -149,7 +140,7 @@ public class Add extends AppCompatActivity {
         MainActivity.setEdit(false);
     }
 
-    public boolean IfEditDisplayPhoto(){
+    public boolean ifEditDisplayPhoto(){
         if (mCurrentPhotoPath != null) {
             setPic();
             if (ifPhoto && MainActivity.isEdit()) {
@@ -160,9 +151,7 @@ public class Add extends AppCompatActivity {
         return false;
     }
 
-    private static Intent intentEdit;
-
-    public void ifEditDisplayAllData(){
+    public void ifEditDisplayAllDataWithoutPhoto(){
 
         intentEdit = getIntent();
 
@@ -188,20 +177,17 @@ public class Add extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
 
-
-
-        if( IfEditDisplayPhoto() ){ return; };
+        if( ifEditDisplayPhoto() ){ return; };
 
         name = (EditText) findViewById(R.id.editTextImie);
         age = (EditText) findViewById(R.id.editTextWiek);
         date = (DatePicker) findViewById(R.id.datePicker);
 
-        ifEditDisplayAllData();
+        ifEditDisplayAllDataWithoutPhoto();
 
     }
 

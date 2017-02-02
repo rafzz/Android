@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private DataBase dataBase = new DataBase(this);
 
-
     private static String summaryReport = "";
     public static String getSummaryReport() {return summaryReport; }
     public static void setSummaryReport(String summaryReport) {MainActivity.summaryReport = summaryReport; }
@@ -220,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.setSummaryReport(MainActivity.getSummaryReport() +
                 this.getResources().getString(R.string.editSummary) + name + " " + age);
     }
-
 
 
     public void removeRow(View view) {

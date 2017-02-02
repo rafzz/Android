@@ -8,9 +8,7 @@ import android.widget.DatePicker;
 
 public class CustomDatePicker extends DatePicker
 {
-    public CustomDatePicker(Context context, AttributeSet attrs, int
-            defStyle)
-    {
+    public CustomDatePicker(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -27,8 +25,6 @@ public class CustomDatePicker extends DatePicker
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev)
     {
-        /* Prevent parent controls from stealing our events once we've
-gotten a touch down */
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN)
         {
             ViewParent parentView = getParent();

@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextSize(TEXT_SIZE);
 
-        Layout lay1 = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
-        Appender app1 = new ConsoleAppender( lay1 );
+        Layout layout = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
+        Appender app1 = new ConsoleAppender( layout );
         BasicConfigurator.configure( app1 );
         Logger logger = Logger.getRootLogger();
         logger.debug( "LOG" );
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         String componentsTab[] = equation.split(" ");
-        Stack stackForFacorsAndSigns = new Stack();
+        Stack stackOfFacorsSignsAndResult = new Stack();
         Dictionary signDict = new Hashtable(); //contains weights of signs
 
         signDict.put( sign.POW.toString(), WEIGHT4);
@@ -236,77 +236,78 @@ public class MainActivity extends AppCompatActivity {
 
         for ( String component : componentsTab ) { //component >> single number or sign
 
-            if ( stackForFacorsAndSigns.size() == 0 ) {
+            if ( stackOfFacorsSignsAndResult.size() == 0 ) {
                 try {
                     output += Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
-                    stackForFacorsAndSigns.push( component );
+                    stackOfFacorsSignsAndResult.push( component );
                 }
             } else {
                 try {
                     output += " " + Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
-                    while ( !stackForFacorsAndSigns.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stackForFacorsAndSigns.peek() ) ) {
-                        output += " " + stackForFacorsAndSigns.pop();
+                    while ( !stackOfFacorsSignsAndResult.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stackOfFacorsSignsAndResult.peek() ) ) {
+                        output += " " + stackOfFacorsSignsAndResult.pop();
                     }
-                    stackForFacorsAndSigns.push( component );
+                    stackOfFacorsSignsAndResult.push( component );
 
-                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stackForFacorsAndSigns.peek() ) ) {
-                        stackForFacorsAndSigns.push( component );
+                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stackOfFacorsSignsAndResult.peek() ) ) {
+                        stackOfFacorsSignsAndResult.push( component );
                     }
                 }
             }
         }
-        for ( int i = 0; i <= stackForFacorsAndSigns.size(); i++ ) {
-            output += " " + stackForFacorsAndSigns.pop();
+        for ( int i = 0; i <= stackOfFacorsSignsAndResult.size(); i++ ) {
+            output += " " + stackOfFacorsSignsAndResult.pop();
         }
-        stackForFacorsAndSigns = new Stack();
+        stackOfFacorsSignsAndResult = new Stack();
 
-        String outTab[] = output.split( " " );
+        String outputTab[] = output.split( " " );
 
-        for ( String component : outTab ) {
+        for ( String component : outputTab ) {
 
             try {
-                stackForFacorsAndSigns.push( Double.parseDouble( component ) );
+                stackOfFacorsSignsAndResult.push( Double.parseDouble( component ) );
             } catch ( NumberFormatException exception ) {
-                Double factorA = ( Double ) stackForFacorsAndSigns.pop(); // first component of equation
-                Double factorB = ( Double ) stackForFacorsAndSigns.pop(); // second component of equation
+                Double factorA = ( Double ) stackOfFacorsSignsAndResult.pop(); // first component of equation
+                Double factorB = ( Double ) stackOfFacorsSignsAndResult.pop(); // second component of equation
 
                 if ( component.equals( sign.ADD.toString() ) ) {
-                    stackForFacorsAndSigns.push( factorB + factorA );
+                    stackOfFacorsSignsAndResult.push( factorB + factorA );
                 } else if ( component.equals( sign.SUBSTRACT.toString() ) ) {
-                    stackForFacorsAndSigns.push( factorB - factorA );
+                    stackOfFacorsSignsAndResult.push( factorB - factorA );
                 } else if ( component.equals( sign.MULTIPLY.toString() ) ) {
-                    stackForFacorsAndSigns.push( factorB * factorA );
+                    stackOfFacorsSignsAndResult.push( factorB * factorA );
                 } else if ( component.equals( sign.DIVIDE.toString() ) ) {
-                    stackForFacorsAndSigns.push( factorB / factorA );
+                    stackOfFacorsSignsAndResult.push( factorB / factorA );
                 } else if ( component.equals( sign.POW.toString() ) ) {
-                    stackForFacorsAndSigns.push(Math.pow( factorB, factorA ) );
+                    stackOfFacorsSignsAndResult.push(Math.pow( factorB, factorA ) );
                 }
             }
         }
-        history += equation + sign.EQUAL.toString() + stackForFacorsAndSigns.peek().toString() + "\n";
+        history += equation + sign.EQUAL.toString() + stackOfFacorsSignsAndResult.peek().toString() + "\n";
 
         equation = "";
 
-        textView.setText( stackForFacorsAndSigns.peek().toString() );
+        textView.setText( stackOfFacorsSignsAndResult.peek().toString() );
 
         equation = textView.getText().toString();
+        /*
         try {
 
             Double.parseDouble( equation );
             dotflag = true;
 
         } catch (NumberFormatException exception) {}
-
-
+        */
     }
+
+
 
     public void openHistory( View view ) {
         Intent intent = new Intent( this, HistoryActivity.class );
         intent.putExtra( EXTRA_MESSAGE, history);
         startActivity( intent );
-
     }
 
     public void cls( View view ) {

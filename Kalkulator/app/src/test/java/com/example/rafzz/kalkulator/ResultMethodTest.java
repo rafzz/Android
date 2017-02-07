@@ -60,39 +60,19 @@ public class ResultMethodTest {
     @Test
     public void ifEquationEmpty() {
         MainActivity mv = new MainActivity();
-        assertTrue(mv.ifEquationEmpty(""));
-        assertTrue(mv.ifEquationEmpty(new String()));
+        assertTrue(mv.ifEquationEqualsEmpty(""));
+        assertTrue(mv.ifEquationEqualsEmpty(new String()));
 
     }
 
     @Test
     public void ifEquationIsNotEmpty() {
         MainActivity mv = new MainActivity();
-        assertFalse(mv.ifEquationEmpty("dfd"));
+        assertFalse(mv.ifEquationEqualsEmpty("dfd"));
 
 
     }
 
-    //ifEquationLastSignIsDot
-
-    @Test
-    public void ifEquationLastIsDot() {
-        MainActivity mv = new MainActivity();
-        assertFalse(mv.ifEquationLastIsDot("dfd"));
-        assertTrue(mv.ifEquationLastIsDot("dfd."));
-
-
-    }
-    //ifEquationLastIsSign
-
-    @Test
-    public void ifEquationLastIsSign() {
-        MainActivity mv = new MainActivity();
-        assertFalse(mv.ifEquationLastIsSign("dfd"));
-        assertTrue(mv.ifEquationLastIsSign("dfd * "));
-
-
-    }
 
     //ifSignOnTheBeginingOfEquation
     @Test

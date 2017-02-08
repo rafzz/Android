@@ -23,7 +23,6 @@ public class HistoryActivity extends AppCompatActivity {
         textView.setText( message );
     }
 
-
     public void finish( View view ) {
         finish();
     }

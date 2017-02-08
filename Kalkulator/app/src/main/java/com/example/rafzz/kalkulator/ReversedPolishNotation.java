@@ -80,11 +80,9 @@ public class ReversedPolishNotation {
                 }
             }
         }
+
         MainActivity.history += equation + sign.EQUAL.toString() + stackOfFacorsSignsAndResult.peek().toString() + "\n";
         return stackOfFacorsSignsAndResult.peek().toString();
 
     }
-
-
-
 }

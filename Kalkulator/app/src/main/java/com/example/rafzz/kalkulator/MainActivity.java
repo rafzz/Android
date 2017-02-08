@@ -14,12 +14,12 @@ import org.apache.log4j.*;
 
 
 public class MainActivity extends AppCompatActivity {
-    
+
     private static final String EXTRA_MESSAGE = "com.example.rafzz.kalkulator";
     private final int SIGN_LENGTH = 3;
     private final int TEXT_SIZE = 35;
 
-    private final  String LOGER_FORMAT = "[%p] %c - %m - Date: %d %n Therad: %t - Method: %M - Line: %L - %x";
+    private final  String LOGER_FORMAT = "[%p] %c - %m - Date: %d %n Thread: %t - Method: %M - Line: %L - %x";
     private final  String LOGER_MESSAGE = "LOG";
 
     protected static String history = "";

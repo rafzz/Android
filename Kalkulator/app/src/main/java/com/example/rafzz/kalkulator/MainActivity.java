@@ -12,18 +12,15 @@ import android.widget.TextView;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.*;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Stack;
-
 
 public class MainActivity extends AppCompatActivity {
-
-
-
+    
     private static final String EXTRA_MESSAGE = "com.example.rafzz.kalkulator";
     private final int SIGN_LENGTH = 3;
     private final int TEXT_SIZE = 35;
+
+    private final  String LOGER_FORMAT = "[%p] %c - %m - Date: %d %n Therad: %t - Method: %M - Line: %L - %x";
+    private final  String LOGER_MESSAGE = "LOG";
 
     protected static String history = "";
     private String equation = "";
@@ -31,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Sign sign;
 
     private boolean signFlag = false;  //true if sign was written
-    private boolean dotflag = false;   //true if dot was written
+    private boolean dotFlag = false;   //true if dot was written
     private boolean secondSignFlag = false;
 
     private TextView textView;
@@ -44,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextSize(TEXT_SIZE);
 
-        Layout layout = new PatternLayout( "[%p] %c - %m - Data wpisu: %d %n Wątek: %t - Metoda: %M - Linia: %L - %x" );
+        Layout layout = new PatternLayout( LOGER_FORMAT );
         Appender app1 = new ConsoleAppender( layout );
         BasicConfigurator.configure( app1 );
         Logger logger = Logger.getRootLogger();
-        logger.debug( "LOG" );
+        logger.debug( LOGER_MESSAGE );
     }
 
     public static String getExtraMessage() { return EXTRA_MESSAGE; }
@@ -59,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         String buttonText = button.getText().toString();
 
         if ( dotPressed( buttonText ) ) {
-            if (ifEquationIsNotEmptyAndDotWasntWritten( dotflag, equation ) ) {
+            if (ifEquationIsNotEmptyAndDotWasntWritten(dotFlag, equation ) ) {
 
-                dotflag = true;
+                dotFlag = true;
                 textView.setText( textView.getText().toString() + button.getText().toString() );
                 equation += button.getText().toString();
                 return;
@@ -74,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         if ( ifNoSignWrittenAndWritingSign( buttonText, signFlag ) ) {
 
             signFlag=true;
-            dotflag = false;
+            dotFlag = false;
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
 
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 equation += sign.SUBSTRACT.toChar();
                 textView.setText( textView.getText().toString() + sign.SUBSTRACT.toMinus() );
                 secondSignFlag =true;
-                dotflag=true;
+                dotFlag =true;
 
             }else{
                 equation += "";
@@ -101,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             signFlag = false;
             secondSignFlag =false;
-            dotflag=false;
+            dotFlag =false;
             equation += button.getText().toString();
             textView.setText( textView.getText().toString() + button.getText().toString() );
         }
@@ -168,18 +165,12 @@ public class MainActivity extends AppCompatActivity {
         textView = ( TextView ) findViewById( R.id.textView );
 
         if(ifEquationEqualsEmpty(equation) || textView.length()==1 ) { return; }
-
-        if(!equation.contains(" ") && equation.charAt(0)==sign.SUBSTRACT.toChar()){ return; }
-
+        if(ifEquationIsSingleNegativeNumber( equation )){ return; }
         if(ifEquationEqualsSingleSign( equation, signFlag ) ) { return; }
-
         if(ifSignOnTheBeginingOfEquation( equation,  signFlag)){
-
            equation =equation.substring(1,2)+equation.substring(3,equation.length());
         }
-
         if (ifEquationContainsNoSign( equation ) ) { return; }
-
         if(equation.contains(sign.DOT.toDotSpace())){ return; }
 
 
@@ -187,12 +178,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         equation = textView.getText().toString();
+        if(equation.contains(".")){ dotFlag =true; }
 
     }
 
     //ResultValidation
     public boolean ifEquationEqualsEmpty( String equation ) {
         return equation.equals( "" );
+    }
+
+    public boolean ifEquationIsSingleNegativeNumber( String equation ){
+        return !equation.contains(" ") && equation.charAt(0)==sign.SUBSTRACT.toChar();
     }
 
     public boolean ifEquationEqualsSingleSign( String equation, boolean signFlag ){
@@ -229,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clsTextView(View view ) {
-        dotflag = false;
+        dotFlag = false;
         signFlag=false;
         secondSignFlag =false;
         textView = ( TextView ) findViewById( R.id.textView );

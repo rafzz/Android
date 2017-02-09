@@ -51,6 +51,7 @@ public class MainActivity
     private LocationRequest locationRequest;
     private static Location mLastLocation;
     private final int REFRESH_INTERVAL = 1000;
+    private final int MAP_ZOOM = 14;
 
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] DELTA_ROTATION_VECTOR = new float[4];
@@ -243,7 +244,7 @@ public class MainActivity
         double lat = mLastLocation.getLatitude();
         double lng = mLastLocation.getLongitude();
         LatLng latLng = new LatLng(lat, lng);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAP_ZOOM));
     }
 
     @Override

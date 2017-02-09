@@ -31,6 +31,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static List<LatLng> pathList = new ArrayList<LatLng>();
 
+    private final int REFRESH_INTERVAL = 1000;
+    private final int MAP_ZOOM = 14;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +53,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 bundle.getDouble(MainActivity.getLONGITUDE_MESSAGE()));
         mLatLang = latlng;
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, MAP_ZOOM));
         mMap.addMarker(new MarkerOptions().position(latlng));
 
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(1000);
+        locationRequest.setInterval(REFRESH_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

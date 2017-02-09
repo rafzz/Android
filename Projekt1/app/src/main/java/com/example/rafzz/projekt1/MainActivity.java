@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -35,7 +34,12 @@ import com.google.android.gms.maps.model.LatLng;
 import static com.example.rafzz.projekt1.R.id.map;
 
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity
+        extends AppCompatActivity
+        implements SensorEventListener,
+        OnMapReadyCallback, LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
 
     private GoogleMap mMap;
@@ -55,11 +59,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
-        //Maps--------------------------------------------------------------------------------------
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
-        //Maps--------------------------------------------------------------------------------------
+
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -69,37 +72,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     .build();
         }
 
-
-        //GPS-------------------------------------------------------------------------------------------
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-
-
-        //GPS-------------------------------------------------------------------------------------------
-
 
         LightText = (TextView) findViewById(R.id.LightText);
         xText = (TextView) findViewById(R.id.xText);
         yText = (TextView) findViewById(R.id.yText);
         zText = (TextView) findViewById(R.id.zText);
 
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         gyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-
     }
+
+    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
+
+    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
+
+    private final static String LATITUDE_MESSAGE = "latitude";
+    private final static String LONGITUDE_MESSAGE = "longitude";
 
     public void openMap(View v) {
         Intent mapIntent = new Intent(this, MapsActivity.class);
         Bundle locationBundle = new Bundle();
-
-        locationBundle.putDouble("latitude", mLastLocation.getLatitude());
-        locationBundle.putDouble("longitude", mLastLocation.getLongitude());
+        locationBundle.putDouble(LATITUDE_MESSAGE, mLastLocation.getLatitude());
+        locationBundle.putDouble(LONGITUDE_MESSAGE, mLastLocation.getLongitude());
         mapIntent.putExtras(locationBundle);
-
         startActivity(mapIntent);
     }
 
@@ -108,35 +107,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Camera c;
     private Camera.Parameters parameters;
 
-    public void light(View v) {
-
-        if (!v.isSelected()) {
+    public void light(View button) {
+        if (!button.isSelected()) {
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             c.setParameters(parameters);
             c.startPreview();
-            v.setSelected(true);
-        } else if (v.isSelected()) {
+            button.setSelected(true);
+        } else if (button.isSelected()) {
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             c.setParameters(parameters);
             c.stopPreview();
-            v.setSelected(false);
+            button.setSelected(false);
         }
     }
     //flashlight------------------------------------------------------------------------------------
 
-
     protected void onStart() {
-
         super.onStart();
         mGoogleApiClient.connect();
     }
 
-
-
-
     //light sensor, gyroscope, compass--------------------------------------------------------------
     private static final float NS2S = 1.0f / 1000000000.0f;
-    private final float[] deltaRotationVector = new float[4];
+    private final float[] DELTA_ROTATION_VECTOR = new float[4];
     private final double EPSILON = 0.00001;
     private float timestamp;
 
@@ -183,14 +176,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 float thetaOverTwo = omegaMagnitude * dT / 2.0f;
                 float sinThetaOverTwo = (float) Math.sin(thetaOverTwo);
                 float cosThetaOverTwo = (float) Math.cos(thetaOverTwo);
-                deltaRotationVector[0] = sinThetaOverTwo * axisX;
-                deltaRotationVector[1] = sinThetaOverTwo * axisY;
-                deltaRotationVector[2] = sinThetaOverTwo * axisZ;
-                deltaRotationVector[3] = cosThetaOverTwo;
+                DELTA_ROTATION_VECTOR[0] = sinThetaOverTwo * axisX;
+                DELTA_ROTATION_VECTOR[1] = sinThetaOverTwo * axisY;
+                DELTA_ROTATION_VECTOR[2] = sinThetaOverTwo * axisZ;
+                DELTA_ROTATION_VECTOR[3] = cosThetaOverTwo;
             }
             timestamp = event.timestamp;
             float[] deltaRotationMatrix = new float[9];
-            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, DELTA_ROTATION_VECTOR);
 
         }
 
@@ -201,9 +194,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-    }
+
 
     protected void onResume() {
         mGoogleApiClient.connect();
@@ -219,15 +210,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    private ToggleButton toggleLightButton;
+
     @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
         c.release();//flashlight
-        ToggleButton togle = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleLightButton = (ToggleButton) findViewById(R.id.toggleButton);
 
-        togle.setChecked(false);
-        togle.setSelected(false);
+        toggleLightButton.setChecked(false);
+        toggleLightButton.setSelected(false);
     }
     //light sensor, gyroscope, compass--------------------------------------------------------------
 
@@ -235,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
@@ -243,13 +235,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mMap.setMyLocationEnabled(true);
     }
 
-
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         mLatitudeText.setText(String.valueOf(location.getLatitude()));
         mLongitudeText.setText(String.valueOf(location.getLongitude()));
-
         double lat = mLastLocation.getLatitude();
         double lng = mLastLocation.getLongitude();
         LatLng ll = new LatLng(lat, lng);
@@ -258,16 +248,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Maps------------------------------------------------------------------------------------------
 
     private static Location mLastLocation;
-    //private Location mLastLocation;
+    private final int REFRESH_INTERVAL = 1000;
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(1000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(REFRESH_INTERVAL);
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
             return;
         }
@@ -281,15 +274,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    @Override
+    public void onConnectionSuspended(int i) {}
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int i) {}
 
 }

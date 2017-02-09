@@ -43,8 +43,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         Intent mapIntent = getIntent();
-        Bundle bun = mapIntent.getExtras();
-        LatLng latlng = new LatLng(bun.getDouble("latitude"), bun.getDouble("longitude"));
+        Bundle bundle = mapIntent.getExtras();
+        LatLng latlng = new LatLng(bundle.getDouble(MainActivity.getLATITUDE_MESSAGE()),
+                bundle.getDouble(MainActivity.getLONGITUDE_MESSAGE()));
         mLatLang = latlng;
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));

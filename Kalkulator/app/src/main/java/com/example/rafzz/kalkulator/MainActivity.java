@@ -50,17 +50,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static String getExtraMessage() { return EXTRA_MESSAGE; }
 
-    public void write( View view ) {
+    public void write( View button ) {
         textView = ( TextView ) findViewById( R.id.textView );
-        button = ( Button ) view;
-        String buttonText = button.getText().toString();
+        this.button = ( Button ) button;
+        String buttonText = this.button.getText().toString();
 
         if ( dotPressed( buttonText ) ) {
             if (ifEquationIsNotEmptyAndDotWasntWritten(dotFlag, equation ) ) {
 
                 dotFlag = true;
-                textView.setText( textView.getText().toString() + button.getText().toString() );
-                equation += button.getText().toString();
+                textView.setText( textView.getText().toString() + this.button.getText().toString() );
+                equation += this.button.getText().toString();
                 return;
 
             } else {
@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
             signFlag=true;
             dotFlag = false;
-            equation += button.getText().toString();
-            textView.setText( textView.getText().toString() + button.getText().toString() );
+            equation += this.button.getText().toString();
+            textView.setText( textView.getText().toString() + this.button.getText().toString() );
 
         } else if ( ifSignWrittenAndWrittingSign( buttonText, signFlag ) ) {
 
@@ -91,16 +91,16 @@ public class MainActivity extends AppCompatActivity {
 
         } else if ( ifNoSignWrittenAndWrittingNoSign( buttonText, signFlag ) ) {
 
-            equation += button.getText().toString();
-            textView.setText(textView.getText().toString() + button.getText().toString());
+            equation += this.button.getText().toString();
+            textView.setText(textView.getText().toString() + this.button.getText().toString());
 
         } else if ( ifSignWrittenAndWrittingNoSign( buttonText, signFlag ) ) {
 
             signFlag = false;
             secondSignFlag =false;
             dotFlag =false;
-            equation += button.getText().toString();
-            textView.setText( textView.getText().toString() + button.getText().toString() );
+            equation += this.button.getText().toString();
+            textView.setText( textView.getText().toString() + this.button.getText().toString() );
         }
     }
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void result( View view ) {
+    public void result( View button ) {
         textView = ( TextView ) findViewById( R.id.textView );
 
         if(ifEquationEqualsEmpty(equation) || textView.length()==1 ) { return; }
@@ -218,13 +218,13 @@ public class MainActivity extends AppCompatActivity {
     }
     //ResultValidation
 
-    public void openHistory( View view ) {
+    public void openHistory( View button ) {
         Intent intent = new Intent( this, HistoryActivity.class );
         intent.putExtra( EXTRA_MESSAGE, history);
         startActivity( intent );
     }
 
-    public void clsTextView(View view ) {
+    public void clsTextView(View button ) {
         dotFlag = false;
         signFlag=false;
         secondSignFlag =false;
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         equation = "";
     }
 
-    public void clsHistory( View view ) {
+    public void clsHistory( View button ) {
         history = "";
     }
 

@@ -33,14 +33,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 import static com.example.rafzz.projekt1.R.id.map;
 
-
 public class MainActivity
         extends AppCompatActivity
         implements SensorEventListener,
         OnMapReadyCallback, LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
 
     private GoogleMap mMap;
 
@@ -51,7 +49,33 @@ public class MainActivity
     protected static GoogleApiClient mGoogleApiClient;
 
     private LocationRequest locationRequest;
+    private static Location mLastLocation;
+    private final int REFRESH_INTERVAL = 1000;
 
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private final float[] DELTA_ROTATION_VECTOR = new float[4];
+    private final double EPSILON = 0.00001;
+    private float timestamp;
+
+    private TextView LightText;
+    private TextView xText;
+    private TextView yText;
+    private TextView zText;
+
+    private Sensor lightSensor;
+    private Sensor gyroSensor;
+    private Sensor compassSensor;
+
+    private Camera camera;
+    private Camera.Parameters cameraParameters;
+
+    private ToggleButton toggleLightButton;
+
+    private final static String LATITUDE_MESSAGE = "latitude";
+    private final static String LONGITUDE_MESSAGE = "longitude";
+
+    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
+    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,63 +110,55 @@ public class MainActivity
         compassSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
-    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
-
-    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
-
-    private final static String LATITUDE_MESSAGE = "latitude";
-    private final static String LONGITUDE_MESSAGE = "longitude";
-
-    public void openMap(View v) {
-        Intent mapIntent = new Intent(this, MapsActivity.class);
-        Bundle locationBundle = new Bundle();
-        locationBundle.putDouble(LATITUDE_MESSAGE, mLastLocation.getLatitude());
-        locationBundle.putDouble(LONGITUDE_MESSAGE, mLastLocation.getLongitude());
-        mapIntent.putExtras(locationBundle);
-        startActivity(mapIntent);
-    }
-
-
-    //flashlight------------------------------------------------------------------------------------
-    private Camera c;
-    private Camera.Parameters parameters;
-
-    public void light(View button) {
-        if (!button.isSelected()) {
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            c.setParameters(parameters);
-            c.startPreview();
-            button.setSelected(true);
-        } else if (button.isSelected()) {
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            c.setParameters(parameters);
-            c.stopPreview();
-            button.setSelected(false);
-        }
-    }
-    //flashlight------------------------------------------------------------------------------------
-
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
-    //light sensor, gyroscope, compass--------------------------------------------------------------
-    private static final float NS2S = 1.0f / 1000000000.0f;
-    private final float[] DELTA_ROTATION_VECTOR = new float[4];
-    private final double EPSILON = 0.00001;
-    private float timestamp;
+    protected void onResume() {
+        mGoogleApiClient.connect();
+        super.onResume();
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_NORMAL);
 
-    private TextView LightText;
-    private TextView xText;
-    private TextView yText;
-    private TextView zText;
+        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            camera = Camera.open();
+            cameraParameters = camera.getParameters();
+        }
+    }
 
-    private Sensor lightSensor;
-    private Sensor gyroSensor;
-    private Sensor compassSensor;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+        camera.release();
+        toggleLightButton = (ToggleButton) findViewById(R.id.toggleButton);
 
+        toggleLightButton.setChecked(false);
+        toggleLightButton.setSelected(false);
+    }
 
+    //lightMethods
+    public void light(View button) {
+        if (!button.isSelected()) {
+            cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            camera.setParameters(cameraParameters);
+            camera.startPreview();
+            button.setSelected(true);
+        } else if (button.isSelected()) {
+            cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            camera.setParameters(cameraParameters);
+            camera.stopPreview();
+            button.setSelected(false);
+        }
+    }
+    //lightMethods
+
+    //sensorsMethods
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -191,48 +207,32 @@ public class MainActivity
             TextView compassText = (TextView) findViewById(R.id.compassText);
             compassText.setText(String.valueOf((event.values[0] + "  ,  " + event.values[1] + "  ,  " + event.values[2])));
         }
-
     }
-
-
-
-    protected void onResume() {
-        mGoogleApiClient.connect();
-        super.onResume();
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
-
-        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            c = Camera.open();   //flashlight
-            parameters = c.getParameters();
-
-        }
-    }
-
-    private ToggleButton toggleLightButton;
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-        c.release();//flashlight
-        toggleLightButton = (ToggleButton) findViewById(R.id.toggleButton);
+    public void onAccuracyChanged(Sensor sensor, int i) {}
+    //sensorMethods
 
-        toggleLightButton.setChecked(false);
-        toggleLightButton.setSelected(false);
-    }
-    //light sensor, gyroscope, compass--------------------------------------------------------------
-
-    //Maps------------------------------------------------------------------------------------------
+    //mapAndLocationMethods
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mMap.setMyLocationEnabled(true);
+    }
+
+    public void openMap(View button) {
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        Bundle locationBundle = new Bundle();
+        locationBundle.putDouble(LATITUDE_MESSAGE, mLastLocation.getLatitude());
+        locationBundle.putDouble(LONGITUDE_MESSAGE, mLastLocation.getLongitude());
+        mapIntent.putExtras(locationBundle);
+        startActivity(mapIntent);
     }
 
     @Override
@@ -242,13 +242,9 @@ public class MainActivity
         mLongitudeText.setText(String.valueOf(location.getLongitude()));
         double lat = mLastLocation.getLatitude();
         double lng = mLastLocation.getLongitude();
-        LatLng ll = new LatLng(lat, lng);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 14));
+        LatLng latLng = new LatLng(lat, lng);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
     }
-    //Maps------------------------------------------------------------------------------------------
-
-    private static Location mLastLocation;
-    private final int REFRESH_INTERVAL = 1000;
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -279,8 +275,5 @@ public class MainActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {}
-
+    //mapAndLocationMethods
 }

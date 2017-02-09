@@ -27,6 +27,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private LatLng mLatLang;
+    private LocationRequest locationRequest;
+
+    private static List<LatLng> pathList = new ArrayList<LatLng>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -49,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLatLang = latlng;
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));
+        mMap.addMarker(new MarkerOptions().position(latlng));
 
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(1000);
@@ -61,23 +64,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationServices.FusedLocationApi.requestLocationUpdates(MainActivity.mGoogleApiClient, locationRequest, this);
     }
 
-    public void backToMain(View v){
-        this.finish();
-    }
-
-
-    private LocationRequest locationRequest;
-
-    private static List<LatLng> list = new ArrayList<LatLng>();
     @Override
     public void onLocationChanged(Location location) {
 
-        list.add(new LatLng(location.getLatitude(),location.getLongitude()));
+        pathList.add(new LatLng(location.getLatitude(),location.getLongitude()));
         mMap.addPolyline(new PolylineOptions()
-                .addAll(list)
+                .addAll(pathList)
                 .width(5).color(Color.BLUE).geodesic(true));
+    }
 
-
+    public void backToMain(View v){
+        this.finish();
     }
 }
 

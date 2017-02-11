@@ -19,18 +19,28 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int ADD_ACTIVITY_REQUEST_CODE = 1;
+    private final static String defaultLanguage = "default"; //ENG
+    private final static String PLLanguage = "PL";
+
+    private final static int ADD_ACTIVITY_REQUEST_CODE = 1;
     private final int TEXT_SIZE = 24;
 
+    private final int PHOTO_SCALE = 30;
+
+    private final String NAME_MESAGE="name";
+    private final String AGE_MESAGE="age";
+    private final String DATE_MESAGE="date";
+    private final String PATH_MESAGE="path";
+    private final String ID_MESAGE="id";
+
+
+    private static String language = PLLanguage;
+
     protected static boolean edit;
-    public static boolean isEdit() { return edit; }
-    public static void setEdit(boolean ifedit) { MainActivity.edit = ifedit; }
 
     private DataBase dataBase = new DataBase(this);
 
     private static String summaryReport = "";
-    public static String getSummaryReport() {return summaryReport; }
-    public static void setSummaryReport(String summaryReport) {MainActivity.summaryReport = summaryReport; }
 
     private ArrayList<TextView> textViewList = new ArrayList<TextView>(){};
 
@@ -53,16 +63,6 @@ public class MainActivity extends AppCompatActivity {
         textViewList.clear();
         readDataFromDatabaseAndDisplayDataOnLayout();
     }
-
-    public void openSummary(View v) {
-        Intent intentSum = new Intent(this, Summary.class);
-        startActivity(intentSum);
-    }
-
-    private final static String defaultLanguage = "default"; //ENG
-    private final static String PLLanguage = "PL";
-
-    private static String language = PLLanguage;
 
     public static String getLanguage() {
         return language;
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         summary.setText(R.string.summary);
         readDataFromDatabaseAndDisplayDataOnLayout();
     }
-
 
     public void readDataFromDatabaseAndDisplayDataOnLayout() {
         clsLayout();
@@ -137,26 +136,6 @@ public class MainActivity extends AppCompatActivity {
         bRemove.setOnClickListener(listenerRemove);
     }
 
-    private final int SCALE = 30;
-
-    public void setPic(String path, ImageView mImageView) {
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, bmOptions);
-
-        // Determine how much to scale down the image
-        int scaleFactor = SCALE;
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        mImageView.setImageBitmap(bitmap);
-    }
-
     View.OnClickListener listenerRemove = new View.OnClickListener() {
         public void onClick(View view) {
             removeRow(view);
@@ -168,6 +147,26 @@ public class MainActivity extends AppCompatActivity {
             editRow(view);
         }
     };
+
+    public void setPic(String path, ImageView mImageView) {
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, bmOptions);
+
+        // Determine how much to scale down the image
+        int scaleFactor = PHOTO_SCALE;
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
+        mImageView.setImageBitmap(bitmap);
+    }
+
+
 
     public void editRow(View view) {
 
@@ -192,11 +191,9 @@ public class MainActivity extends AppCompatActivity {
         sendDataToEdit( nameAgeDate,  id,  path);
     }
 
-    private final String NAME_MESAGE="name";
-    private final String AGE_MESAGE="age";
-    private final String DATE_MESAGE="date";
-    private final String PATH_MESAGE="path";
-    private final String ID_MESAGE="id";
+    public static boolean isEdit() { return edit; }
+
+    public static void setEdit(boolean ifedit) { MainActivity.edit = ifedit; }
 
     public void sendDataToEdit(String nameAgeDate, String id, String path){
         Intent intentEdit = new Intent(this, Add.class);
@@ -221,23 +218,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void removeRow(View view) {
+    public void removeRow(View button) {
 
-        dataBase.removeData(view.getId());
+        dataBase.removeData(button.getId());
 
         MainActivity.setSummaryReport(MainActivity.getSummaryReport() +
-                this.getResources().getString(R.string.removeSummary) + view.getId());
+                this.getResources().getString(R.string.removeSummary) + button.getId());
         readDataFromDatabaseAndDisplayDataOnLayout();
     }
 
 
-    public void openAdd(View view) {
+    public void openAdd(View button) {
 
         Intent intent = new Intent(this, Add.class);
         startActivityForResult(intent, ADD_ACTIVITY_REQUEST_CODE);
     }
 
-    public void clsDB(View view) {
+    public void clsDB(View button) {
         clsLayout();
 
         dataBase.removeAllData();
@@ -247,13 +244,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void clsLayout() {
-
         layout = (ViewGroup) findViewById(R.id.activity_main);
         Button addButton = (Button) findViewById(R.id.addButton);
         Button removeButton = (Button) findViewById(R.id.removeButton);
         layout.removeAllViews();
         layout.addView(addButton);
         layout.addView(removeButton);
-
     }
+
+    public void openSummary(View button) {
+        Intent intentSum = new Intent(this, Summary.class);
+        startActivity(intentSum);
+    }
+
+    public static String getSummaryReport() {return summaryReport; }
+
+    public static void setSummaryReport(String summaryReport) {MainActivity.summaryReport = summaryReport; }
+
+
+
 }

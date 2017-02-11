@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         logger.debug( LOGER_MESSAGE );
     }
 
-    public static String getExtraMessage() { return EXTRA_MESSAGE; }
-
     public void write( View button ) {
         textView = ( TextView ) findViewById( R.id.textView );
         this.button = ( Button ) button;
@@ -57,12 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         if ( dotPressed( buttonText ) ) {
             if (ifEquationIsNotEmptyAndDotWasntWritten(dotFlag, equation ) ) {
-
                 dotFlag = true;
                 textView.setText( textView.getText().toString() + this.button.getText().toString() );
                 equation += this.button.getText().toString();
                 return;
-
             } else {
                 return;
             }
@@ -178,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         equation = textView.getText().toString();
+
         if(equation.contains(".")){ dotFlag =true; }
 
     }
@@ -223,6 +220,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra( EXTRA_MESSAGE, history);
         startActivity( intent );
     }
+
+    public static String getExtraMessage() { return EXTRA_MESSAGE; }
 
     public void clsTextView(View button ) {
         dotFlag = false;

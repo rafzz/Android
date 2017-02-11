@@ -33,50 +33,46 @@ import com.google.android.gms.maps.model.LatLng;
 
 import static com.example.rafzz.projekt1.R.id.map;
 
-public class MainActivity
-        extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements SensorEventListener,
         OnMapReadyCallback, LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleMap mMap;
+    private final static String LATITUDE_MESSAGE = "latitude";
+    private final static String LONGITUDE_MESSAGE = "longitude";
 
-    private SensorManager mSensorManager;
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
-
-    protected static GoogleApiClient mGoogleApiClient;
-
-    private LocationRequest locationRequest;
-    private static Location mLastLocation;
     private final int REFRESH_INTERVAL = 1000;
     private final int MAP_ZOOM = 14;
 
-    private static final float NS2S = 1.0f / 1000000000.0f;
+    private final float NS2S = 1.0f / 1000000000.0f;
     private final float[] DELTA_ROTATION_VECTOR = new float[4];
     private final double EPSILON = 0.00001;
     private float timestamp;
+
+    private static Location mLastLocation;
+    protected static GoogleApiClient mGoogleApiClient;
 
     private TextView LightText;
     private TextView xText;
     private TextView yText;
     private TextView zText;
+    private TextView compassText;
+
+    private Camera camera;
+    private Camera.Parameters cameraParameters;
+    private ToggleButton toggleLightButton;
+
+    private LocationRequest locationRequest;
+    private GoogleMap mMap;
 
     private Sensor lightSensor;
     private Sensor gyroSensor;
     private Sensor compassSensor;
 
-    private Camera camera;
-    private Camera.Parameters cameraParameters;
-
-    private ToggleButton toggleLightButton;
-
-    private final static String LATITUDE_MESSAGE = "latitude";
-    private final static String LONGITUDE_MESSAGE = "longitude";
-
-    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
-    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
+    private SensorManager mSensorManager;
+    private TextView mLatitudeText;
+    private TextView mLongitudeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +133,7 @@ public class MainActivity
         super.onPause();
         mSensorManager.unregisterListener(this);
         camera.release();
-        toggleLightButton = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleLightButton = (ToggleButton) findViewById(R.id.toggleLightButton);
 
         toggleLightButton.setChecked(false);
         toggleLightButton.setSelected(false);
@@ -205,7 +201,7 @@ public class MainActivity
         }
 
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            TextView compassText = (TextView) findViewById(R.id.compassText);
+            compassText = (TextView) findViewById(R.id.compassText);
             compassText.setText(String.valueOf((event.values[0] + "  ,  " + event.values[1] + "  ,  " + event.values[2])));
         }
     }
@@ -235,6 +231,10 @@ public class MainActivity
         mapIntent.putExtras(locationBundle);
         startActivity(mapIntent);
     }
+
+    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
+
+    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
 
     @Override
     public void onLocationChanged(Location location) {

@@ -1,5 +1,7 @@
 package com.example.rafzz.kalkulator;
 
+import android.icu.text.IDNA;
+
 /**
  * Created by rafzz on 30.10.2016.
  */
@@ -16,7 +18,6 @@ public enum Sign {
 
     @Override
     public String toString(){
-
         switch (this) {
             case ADD:
                 return "+";
@@ -38,7 +39,6 @@ public enum Sign {
     }
 
     public char toChar(){
-
         switch (this) {
             case ADD:
                 return '+';
@@ -56,13 +56,9 @@ public enum Sign {
                 return '.';
         }
         return '1';
-
     }
 
-
-
     public String toSign(){
-
         switch (this) {
             case ADD:
                 return " + ";
@@ -80,28 +76,21 @@ public enum Sign {
                 return " . ";
         }
         return null;
-
     }
 
     public String toMinus(){
-
         switch (this) {
             case SUBSTRACT:
                 return " -";
-
         }
         return null;
-
     }
 
     public String toDotSpace(){
-
         switch (this) {
             case DOT:
                 return ". ";
-
         }
         return null;
-
     }
 }

@@ -11,8 +11,6 @@ import org.junit.runner.RunWith;
 
 public class WriteMethodTest {
 
-    //ifNoSignWrittenAndWritingSign
-    //ifSignWrittenAndWrittingSign
     @Test
     public void IfSignWrittenAndWritingSign() {
         MainActivity mv = new MainActivity();

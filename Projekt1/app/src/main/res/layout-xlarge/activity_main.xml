@@ -11,7 +11,7 @@
     tools:context="com.example.rafzz.projekt1.MainActivity">
 
     <TextView
-        android:text="not found"
+        android:text="@string/notFound"
         android:textSize="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,25 +22,25 @@
         android:layout_marginTop="12dp" />
 
     <TextView
-        android:text="Latitude:"
+        android:text="@string/latitude"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/mLongitudeText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView" />
+        android:id="@+id/latitudeLable" />
 
     <TextView
-        android:text="Longitude:"
+        android:text="@string/longitude"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/mLongitudeText"
-        android:id="@+id/textView2" />
+        android:id="@+id/laongitudeLable" />
 
     <TextView
-        android:text="not found"
+        android:text="@string/notFound"
         android:textSize="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,58 +48,58 @@
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2" />
+        android:layout_toRightOf="@+id/laongitudeLable"
+        android:layout_toEndOf="@+id/laongitudeLable" />
 
 
     <TextView
         android:textSize="30dp"
-        android:text="Gyroscope:"
+        android:text="@string/gyroscope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="31dp"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/textView3"
+        android:id="@+id/gyroscopeLable"
+        android:layout_below="@+id/lightSensorLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="x:"
+        android:text="@string/x"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/textView4"
+        android:id="@+id/xLable"
+        android:layout_below="@+id/gyroscopeLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="y:"
+        android:text="@string/y"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5"
+        android:layout_below="@+id/xLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView6" />
+        android:id="@+id/yLable" />
 
     <TextView
-        android:text="z:"
+        android:text="@string/z"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView6"
+        android:layout_below="@+id/yLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView7" />
+        android:id="@+id/zLable" />
 
     <TextView
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView5"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3"
+        android:layout_alignBottom="@+id/xLable"
+        android:layout_alignRight="@+id/lightSensorLable"
+        android:layout_alignEnd="@+id/lightSensorLable"
         android:id="@+id/xText" />
 
     <TextView
@@ -122,11 +122,11 @@
 
     <TextView
         android:textSize="30dp"
-        android:text="Compass:"
+        android:text="@string/compass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView11"
-        android:layout_below="@+id/textView7"
+        android:id="@+id/compassLable"
+        android:layout_below="@+id/zLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="13dp" />
@@ -135,7 +135,7 @@
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView11"
+        android:layout_below="@+id/compassLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/compassText" />
@@ -150,16 +150,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/toggleButton" />
+        android:layout_below="@+id/toggleLightButton" />
 
     <TextView
         android:textSize="30dp"
-        android:text="Light Sensor:"
+        android:text="@string/lightSensor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/textView2"
+        android:id="@+id/lightSensorLable"
+        android:layout_below="@+id/laongitudeLable"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -169,16 +169,15 @@
         android:onClick="light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/toggleButton"
+        android:id="@+id/toggleLightButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textOff="Light Off"
-        android:textOn="Light On"
-        android:layout_toStartOf="@+id/button2"
+        android:textOff="@string/lightOff"
+        android:textOn="@string/lightOn"
         android:layout_below="@+id/compassText" />
 
     <Button
-        android:text="OPEN MAP"
+        android:text="@string/openMap"
         android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -196,8 +195,8 @@
         android:layout_marginLeft="36dp"
         android:layout_marginStart="36dp"
         android:id="@+id/LightText"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignBaseline="@+id/lightSensorLable"
+        android:layout_alignBottom="@+id/lightSensorLable"
         android:layout_toRightOf="@+id/xText"
         android:layout_toEndOf="@+id/xText" />
 

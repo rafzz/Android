@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Projekt1</string>
     <string name="title_activity_maps">Map</string>
+    <string name="backToMain">BACK TO MAIN</string>
+
+    <string name="notFound">not found</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="gyroscope">Gyroscope:</string>
+    <string name="x">x:</string>
+    <string name="y">y:</string>
+    <string name="z">z:</string>
+    <string name="lightSensor">Light Sensor:</string>
+    <string name="lightOff">Light Off</string>
+    <string name="lightOn">Light On</string>
+    <string name="compass">Compass:</string>
+    <string name="openMap">OPEN MAP</string>
 </resources>

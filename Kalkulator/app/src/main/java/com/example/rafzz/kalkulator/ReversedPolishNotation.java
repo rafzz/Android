@@ -20,52 +20,53 @@ public class ReversedPolishNotation {
 
         String componentsTab[] = equation.split(" ");
         Stack stackOfFacorsSignsAndResult = new Stack();
-        Dictionary signDict = new Hashtable(); //contains weights of signs
+        Dictionary signAndWeightsDict = new Hashtable();
 
-        signDict.put( sign.POW.toString(), WEIGHT4);
-        signDict.put( sign.MULTIPLY.toString(), WEIGHT3);
-        signDict.put( sign.DIVIDE.toString(), WEIGHT3);
-        signDict.put( sign.ADD.toString(), WEIGHT2);
-        signDict.put( sign.SUBSTRACT.toString(), WEIGHT2);
-        String output = ""; // constins equation formated to RPN
+        signAndWeightsDict.put( sign.POW.toString(), WEIGHT4);
+        signAndWeightsDict.put( sign.MULTIPLY.toString(), WEIGHT3);
+        signAndWeightsDict.put( sign.DIVIDE.toString(), WEIGHT3);
+        signAndWeightsDict.put( sign.ADD.toString(), WEIGHT2);
+        signAndWeightsDict.put( sign.SUBSTRACT.toString(), WEIGHT2);
+        String outputEquation = "";
 
         for ( String component : componentsTab ) { //component >> single number or sign
 
             if ( stackOfFacorsSignsAndResult.size() == 0 ) {
                 try {
-                    output += Double.parseDouble( component );
+                    outputEquation += Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
                     stackOfFacorsSignsAndResult.push( component );
                 }
             } else {
                 try {
-                    output += " " + Double.parseDouble( component );
+                    outputEquation += " " + Double.parseDouble( component );
                 } catch ( NumberFormatException e ) {
-                    while ( !stackOfFacorsSignsAndResult.isEmpty() && ( int ) signDict.get( component ) <= ( int ) signDict.get(stackOfFacorsSignsAndResult.peek() ) ) {
-                        output += " " + stackOfFacorsSignsAndResult.pop();
+                    while ( !stackOfFacorsSignsAndResult.isEmpty() &&
+                            ( int ) signAndWeightsDict.get( component ) <= ( int ) signAndWeightsDict.get(stackOfFacorsSignsAndResult.peek() ) ) {
+                        outputEquation += " " + stackOfFacorsSignsAndResult.pop();
                     }
                     stackOfFacorsSignsAndResult.push( component );
 
-                    if ( ( int ) signDict.get( component ) > ( int ) signDict.get( stackOfFacorsSignsAndResult.peek() ) ) {
+                    if ( ( int ) signAndWeightsDict.get( component ) > ( int ) signAndWeightsDict.get( stackOfFacorsSignsAndResult.peek() ) ) {
                         stackOfFacorsSignsAndResult.push( component );
                     }
                 }
             }
         }
         for ( int i = 0; i <= stackOfFacorsSignsAndResult.size(); i++ ) {
-            output += " " + stackOfFacorsSignsAndResult.pop();
+            outputEquation += " " + stackOfFacorsSignsAndResult.pop();
         }
         stackOfFacorsSignsAndResult = new Stack();
 
-        String outputTab[] = output.split( " " );
+        String outputTab[] = outputEquation.split( " " );
 
         for ( String component : outputTab ) {
 
             try {
                 stackOfFacorsSignsAndResult.push( Double.parseDouble( component ) );
             } catch ( NumberFormatException exception ) {
-                Double factorA = ( Double ) stackOfFacorsSignsAndResult.pop(); // first component of equation
-                Double factorB = ( Double ) stackOfFacorsSignsAndResult.pop(); // second component of equation
+                Double factorA = ( Double ) stackOfFacorsSignsAndResult.pop();
+                Double factorB = ( Double ) stackOfFacorsSignsAndResult.pop();
 
                 if ( component.equals( sign.ADD.toString() ) ) {
                     stackOfFacorsSignsAndResult.push( factorB + factorA );

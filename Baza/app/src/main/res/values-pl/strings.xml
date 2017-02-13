@@ -9,12 +9,14 @@
     <string name="name">imie</string>
     <string name="age">wiek</string>
     <string name="save">ZAPISZ</string>
-    <string name="photo">ZRÓB ZDJĘCIE</string>
+    <string name="takePhoto">ZRÓB ZDJĘCIE</string>
+    <string name="removePhoto">USUŃ ZDJĘCIE</string>
     <string name="addSummary">\nDODANO: </string>
 
     <string name="editSummary">\nEDYTOWANO: </string>
     <string name="removeSummary">\nUSUNIĘTO ID: </string>
     <string name="allRemoveSummary">\nUSUNIĘTO WSZYSTKO</string>
 
-
+    <string name="engButton">ENG</string>
+    <string name="plButton">PL</string>
 </resources>

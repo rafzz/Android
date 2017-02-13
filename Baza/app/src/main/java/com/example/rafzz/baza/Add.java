@@ -48,6 +48,7 @@ public class Add extends AppCompatActivity {
 
     private Button save;
     private Button takePhoto;
+    private Button removePhoto;
 
     private EditText name;
     private EditText age;
@@ -61,14 +62,86 @@ public class Add extends AppCompatActivity {
         setContentView(R.layout.activity_add);
 
         updateLocale();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( ifEditDisplayPhoto() ){ return; };
+
+        name = (EditText) findViewById(R.id.editTextImie);
+        age = (EditText) findViewById(R.id.editTextWiek);
+        date = (DatePicker) findViewById(R.id.datePicker);
+
+        ifEditDisplayAllDataWithoutPhoto();
+    }
+
+    public boolean ifEditDisplayPhoto(){
+        if (mCurrentPhotoPath != null) {
+            setPic();
+            if (ifPhoto && MainActivity.isEdit()) {
+                ifPhoto = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void ifEditDisplayAllDataWithoutPhoto(){
+
+        intentEdit = getIntent();
+
+        if (MainActivity.isEdit()) {
+            Bundle extras = intentEdit.getExtras();
+
+            name.setText((String) extras.get(NAME_MESAGE));
+            age.setText((String) extras.get(AGE_MESAGE));
+            String data = (String) extras.get(DATE_MESAGE);
+            String dataSplit[] = data.split(MESAGE_SPLIT);
+
+            date.updateDate(Integer.parseInt(dataSplit[2]),Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[0]));
+
+            try {
+                mCurrentPhotoPath = (String) extras.get(PATH_MESAGE);
+                setPic();
+            }
+            catch (ArrayIndexOutOfBoundsException a) {}
+
+            editId = (String) extras.get(ID_MESAGE);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        rememberInsertedData(); //on orientation change
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        mCurrentPhotoPath = null;
+        MainActivity.setEdit(false);
+    }
+
+    public void updateLocale() {
+        Locale locale = new Locale(MainActivity.getLanguage());
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        save = (Button) findViewById(R.id.saveButton);
+        save.setText(R.string.save);
+        takePhoto = (Button) findViewById(R.id.photoButton);
+        takePhoto.setText(R.string.takePhoto);
+        removePhoto = (Button) findViewById(R.id.removePhotoButton);
+        removePhoto.setText(R.string.removePhoto);
     }
 
     public void rememberInsertedData(){
         if(MainActivity.isEdit()) {
-
             Bundle extras = new Bundle();
-
             extras.putString(NAME_MESAGE, name.getText().toString());
             extras.putString(AGE_MESAGE, age.getText().toString());
             extras.putString(PATH_MESAGE, mCurrentPhotoPath);
@@ -78,30 +151,6 @@ public class Add extends AppCompatActivity {
             intentEdit.putExtras(extras);
         }
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        rememberInsertedData(); //on orientation change
-
-    }
-
-    public void updateLocale() {
-        Locale locale = new Locale(MainActivity.getLanguage());
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
-        save = (Button) findViewById(R.id.saveButton);
-        save.setText(R.string.save);
-
-        takePhoto = (Button) findViewById(R.id.photoButton);
-        takePhoto.setText(R.string.photo);
-    }
-
-    public boolean nameAndAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
 
     public void save(View view) {
         name = (EditText) findViewById(R.id.editTextImie);
@@ -139,82 +188,12 @@ public class Add extends AppCompatActivity {
         this.finish();
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        mCurrentPhotoPath = null;
-        MainActivity.setEdit(false);
+    public boolean nameAndAgeIsNotEmpty(){ return age.getText().length() != 0 && name.getText().length() != 0; }
+
+    public void removePic(View button){
+        mCurrentPhotoPath=null;
+        setPic();
     }
-
-    public boolean ifEditDisplayPhoto(){
-        if (mCurrentPhotoPath != null) {
-            setPic();
-            if (ifPhoto && MainActivity.isEdit()) {
-                ifPhoto = false;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void ifEditDisplayAllDataWithoutPhoto(){
-
-        intentEdit = getIntent();
-
-        if (MainActivity.isEdit()) {
-            Bundle extras = intentEdit.getExtras();
-
-            name.setText((String) extras.get(NAME_MESAGE));
-            age.setText((String) extras.get(AGE_MESAGE));
-            String data = (String) extras.get(DATE_MESAGE);
-            String dataSplit[] = data.split(MESAGE_SPLIT);
-
-            date.updateDate(Integer.parseInt(dataSplit[2]),Integer.parseInt(dataSplit[1]), Integer.parseInt(dataSplit[0]));
-
-            try {
-                mCurrentPhotoPath = (String) extras.get(PATH_MESAGE);
-                setPic();
-            }
-            catch (ArrayIndexOutOfBoundsException a) {}
-
-            editId = (String) extras.get(ID_MESAGE);
-        }
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if( ifEditDisplayPhoto() ){ return; };
-
-        name = (EditText) findViewById(R.id.editTextImie);
-        age = (EditText) findViewById(R.id.editTextWiek);
-        date = (DatePicker) findViewById(R.id.datePicker);
-
-        ifEditDisplayAllDataWithoutPhoto();
-
-    }
-
-
-
-    public File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
-        String imageFileName = FILE_NAME_FORMAT + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                FILE_FORMAT,         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-
 
     public void dispatchTakePictureIntent(View button) {
         ifPhoto = true;
@@ -242,6 +221,21 @@ public class Add extends AppCompatActivity {
         }
     }
 
+    public File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        String imageFileName = FILE_NAME_FORMAT + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                FILE_FORMAT,         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     public void setPic() {
         ImageView mImageView = (ImageView) findViewById(R.id.imageView);
 
@@ -262,5 +256,4 @@ public class Add extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
     }
-
 }

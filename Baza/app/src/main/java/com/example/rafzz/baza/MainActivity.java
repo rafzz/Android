@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void readDataFromDatabaseAndDisplayDataOnLayout() {
         clsLayout();
-
         Cursor cursor = dataBase.writeAllData();
         while (cursor.moveToNext()) {
             int id = cursor.getInt(0);
@@ -166,9 +165,7 @@ public class MainActivity extends AppCompatActivity {
         mImageView.setImageBitmap(bitmap);
     }
 
-
-
-    public void editRow(View view) {
+    public void editRow(View button) {
 
         String nameAgeDate = "";
         String id = "";
@@ -177,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         edit = true;
 
         for (TextView textView : textViewList) {
-            if (textView.getId() == view.getId()) {
+            if (textView.getId() == button.getId()) {
                 nameAgeDate = textView.getText().toString();
                 id += textView.getId();
 
@@ -217,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 this.getResources().getString(R.string.editSummary) + name + " " + age);
     }
 
-
     public void removeRow(View button) {
 
         dataBase.removeData(button.getId());
@@ -226,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 this.getResources().getString(R.string.removeSummary) + button.getId());
         readDataFromDatabaseAndDisplayDataOnLayout();
     }
-
 
     public void openAdd(View button) {
         Intent intent = new Intent(this, Add.class);
@@ -239,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.setSummaryReport(MainActivity.getSummaryReport() +
                 this.getResources().getString(R.string.allRemoveSummary));
     }
-
 
     public void clsLayout() {
         layout = (ViewGroup) findViewById(R.id.activity_main);

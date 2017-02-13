@@ -48,43 +48,42 @@ public class DataBase extends SQLiteOpenHelper {
         }
     }
 
-
     public void addData(String name, int age, String path, String birth_date) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase dataBase = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(this.NAME, name);
         values.put(this.AGE, age);
         values.put(this.PATH, path);
         values.put(this.BIRTH_DATE, birth_date);
-        db.insertOrThrow(TABLE_NAME, null, values);
+        dataBase.insertOrThrow(TABLE_NAME, null, values);
     }
 
     public Cursor writeAllData() {
         String[] column = {PK_NAME, NAME, AGE, PATH, BIRTH_DATE};
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, column, null, null, null, null, null);
+        SQLiteDatabase dataBase = getReadableDatabase();
+        Cursor cursor = dataBase.query(TABLE_NAME, column, null, null, null, null, null);
         return cursor;
     }
 
     public void removeAllData() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_NAME, null, null);
+        SQLiteDatabase dataBase = getWritableDatabase();
+        dataBase.delete(TABLE_NAME, null, null);
     }
 
     public void updateData(int id, String name, int age, String path, String birth_date) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase dataBase = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(this.NAME, name);
         values.put(this.AGE, age);
         values.put(this.PATH, path);
         values.put(this.BIRTH_DATE, birth_date);
         String[] args = {"" + id};
-        db.update(TABLE_NAME, values, PK_NAME + "=?", args);
+        dataBase.update(TABLE_NAME, values, PK_NAME + "=?", args);
     }
 
     public void removeData(int id) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase dataBase = getWritableDatabase();
         String[] args = {"" + id};
-        db.delete(TABLE_NAME, PK_NAME + "=?", args);
+        dataBase.delete(TABLE_NAME, PK_NAME + "=?", args);
     }
 }

@@ -10,11 +10,14 @@
     <string name="name">name</string>
     <string name="age">age</string>
     <string name="save">SAVE</string>
-    <string name="photo">TAKE PHOTO</string>
+    <string name="takePhoto">TAKE PHOTO</string>
+    <string name="removePhoto">REMOVE PHOTO</string>
     <string name="addSummary">\nADDED: </string>
 
     <string name="editSummary">\nEDITED: </string>
     <string name="removeSummary">\nREMOVED ID: </string>
     <string name="allRemoveSummary">\nREMOVED ALL</string>
 
+    <string name="engButton">ENG</string>
+    <string name="plButton">PL</string>
 </resources>

@@ -20,8 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/activity_main"
@@ -32,12 +30,6 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context="com.example.rafzz.baza.MainActivity">
-
-
-
-
-
-
 
             <Button
                 android:text="@string/removeAll"
@@ -59,13 +51,7 @@
                 android:onClick="openAdd"
                 android:id="@+id/addButton" />
 
-
-
-
-
-
         </TableLayout>
-
     </HorizontalScrollView>
 </ScrollView>
 
@@ -78,12 +64,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp" />
 
     <Button
-        android:text="ENG"
+        android:text="@string/engButton"
         android:layout_height="wrap_content"
         android:id="@+id/buttonENG"
         android:layout_width="wrap_content"
@@ -92,7 +77,7 @@
         android:layout_toRightOf="@+id/summaryButton" />
 
     <Button
-        android:text="PL"
+        android:text="@string/plButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button"

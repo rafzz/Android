@@ -14,13 +14,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final String TABLE_NAME = "osoby";
-    private static final String PK_NAME = "nr";
-    private static final String NAME = "imie";
-    private static final String AGE = "wiek";
-    private static final String DB_NAME = "dane.db";
-    private static final String PATH = "sciezka";
-    private static final String BIRTH_DATE = "data_ur";
+    private static final String TABLE_NAME = "person";
+    private static final String PK_NAME = "id";
+    private static final String NAME = "name";
+    private static final String AGE = "age";
+    private static final String DB_NAME = "data.db";
+    private static final String PATH = "path";
+    private static final String BIRTH_DATE = "birthDate";
 
 
     public DataBase(Context context) {
@@ -44,8 +44,7 @@ public class DataBase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // If you need to add a column
         if (newVersion > oldVersion) {
-            db.execSQL("ALTER TABLE osoby ADD COLUMN sciezka text");
-            db.execSQL("ALTER TABLE osoby ADD COLUMN BIRTH_DATE text");
+
         }
     }
 

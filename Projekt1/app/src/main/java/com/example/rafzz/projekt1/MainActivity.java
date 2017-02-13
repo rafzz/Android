@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity
 
         mLatitudeText = (TextView) findViewById(R.id.mLatitudeText);
         mLongitudeText = (TextView) findViewById(R.id.mLongitudeText);
-
         LightText = (TextView) findViewById(R.id.LightText);
         xText = (TextView) findViewById(R.id.xText);
         yText = (TextView) findViewById(R.id.yText);
@@ -132,21 +131,21 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+
         camera.release();
         toggleLightButton = (ToggleButton) findViewById(R.id.toggleLightButton);
-
         toggleLightButton.setChecked(false);
         toggleLightButton.setSelected(false);
     }
 
     //lightMethods
     public void light(View button) {
-        if (!button.isSelected()) {
+        if ( !button.isSelected() ) {
             cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             camera.setParameters(cameraParameters);
             camera.startPreview();
             button.setSelected(true);
-        } else if (button.isSelected()) {
+        } else if ( button.isSelected() ) {
             cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             camera.setParameters(cameraParameters);
             camera.stopPreview();
@@ -232,9 +231,13 @@ public class MainActivity extends AppCompatActivity
         startActivity(mapIntent);
     }
 
-    public static String getLATITUDE_MESSAGE() { return LATITUDE_MESSAGE; }
+    public static String getLATITUDE_MESSAGE() {
+        return LATITUDE_MESSAGE;
+    }
 
-    public static String getLONGITUDE_MESSAGE() { return LONGITUDE_MESSAGE; }
+    public static String getLONGITUDE_MESSAGE() {
+        return LONGITUDE_MESSAGE;
+    }
 
     @Override
     public void onLocationChanged(Location location) {

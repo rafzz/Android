@@ -19,8 +19,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String defaultLanguage = "default"; //ENG
-    private final static String PLLanguage = "PL";
+    private final static String DEFAULT_LANGUAGE = "default"; //ENG
+    private final static String PL_LANGUAGE = "PL";
 
     private final static int ADD_ACTIVITY_REQUEST_CODE = 1;
     private final int TEXT_SIZE = 24;
@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private final String ID_MESAGE="id";
 
 
-    private static String language = PLLanguage;
+    private static String language = PL_LANGUAGE;
 
-    protected static boolean edit;
+    private static boolean edit;
 
     private DataBase dataBase = new DataBase(this);
 
@@ -69,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPL(View v) {
-        language = PLLanguage;
+        language = PL_LANGUAGE;
         updateLocale();
     }
 
     public void clickENG(View v) {
-        language = defaultLanguage;
+        language = DEFAULT_LANGUAGE;
         updateLocale();
     }
 
@@ -229,14 +229,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openAdd(View button) {
-
         Intent intent = new Intent(this, Add.class);
         startActivityForResult(intent, ADD_ACTIVITY_REQUEST_CODE);
     }
 
     public void clsDB(View button) {
         clsLayout();
-
         dataBase.removeAllData();
         MainActivity.setSummaryReport(MainActivity.getSummaryReport() +
                 this.getResources().getString(R.string.allRemoveSummary));

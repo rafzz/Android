@@ -34,11 +34,17 @@ public class Add extends AppCompatActivity {
     private final String ID_MESAGE="id";
     private final String MESAGE_SPLIT="/";
 
-    private String editId;
-    private boolean ifPhoto = false;
+    private final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+    private final String FILE_NAME_FORMAT = "JPEG_";
+    private final String FILE_FORMAT = ".jpg";
+    private final String AUTHORITY = "com.example.android.fileprovider";
+    private final int PHOTO_SCALE = 10;
 
     private static String mCurrentPhotoPath;
     private static Intent intentEdit;
+
+    private String editId;
+    private boolean ifPhoto = false;
 
     private Button save;
     private Button takePhoto;
@@ -191,9 +197,7 @@ public class Add extends AppCompatActivity {
 
     }
 
-    private final String DATE_FORMAT = "yyyyMMdd_HHmmss";
-    private final String FILE_NAME_FORMAT = "JPEG_";
-    private final String FILE_FORMAT = ".jpg";
+
 
     public File createImageFile() throws IOException {
         // Create an image file name
@@ -210,9 +214,9 @@ public class Add extends AppCompatActivity {
         return image;
     }
 
-    private final String AUTHORITY = "com.example.android.fileprovider";
 
-    public void dispatchTakePictureIntent(View view) {
+
+    public void dispatchTakePictureIntent(View button) {
         ifPhoto = true;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -238,8 +242,6 @@ public class Add extends AppCompatActivity {
         }
     }
 
-    private final int PHOTO_SCALE = 10;
-
     public void setPic() {
         ImageView mImageView = (ImageView) findViewById(R.id.imageView);
 
@@ -255,6 +257,7 @@ public class Add extends AppCompatActivity {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = PHOTO_SCALE;
         bmOptions.inPurgeable = true;
+
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
